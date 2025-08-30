@@ -146,7 +146,7 @@ const handler = NextAuth({
   },
   pages: {
     signIn: '/',
-    error: '/',
+    error: '/portal',
   },
 })
 

@@ -1,9 +1,12 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import TeamUp from './teamUp';
+import { signupInternal } from '../../api/signup';
 
 const Internal = () => {
     const [submitted, setSubmitted] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -28,9 +31,26 @@ const Internal = () => {
                formData.contactNumber.trim() !== '';
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (isFormValid()) {
-            setSubmitted(true);
+            setLoading(true);
+            setError(null);
+            
+            try {
+                await signupInternal({
+                    name: formData.name,
+                    email: formData.email,
+                    contact_number: formData.contactNumber,
+                    gender: formData.gender,
+                    reg_no: formData.registrationNumber
+                });
+                
+                setSubmitted(true);
+            } catch (err) {
+                setError(err instanceof Error ? err.message : 'Signup failed');
+            } finally {
+                setLoading(false);
+            }
         }
     };
 
@@ -48,6 +68,13 @@ const Internal = () => {
             <div className="flex items-center justify-center h-full">
                 <div className="bg-gray-900 rounded-xl shadow-lg p-10 w-full max-w-md flex flex-col gap-6">
                     <h2 className="text-2xl font-bold text-center mb-4 text-white">STUDENT INFORMATION</h2>
+                    
+                    {error && (
+                        <div className="bg-red-500/20 border border-red-500 text-red-200 px-4 py-2 rounded-md text-sm">
+                            {error}
+                        </div>
+                    )}
+                    
                     <input 
                         className="border rounded-md p-3" 
                         type="text" 
@@ -55,6 +82,7 @@ const Internal = () => {
                         value={formData.name}
                         onChange={handleInputChange}
                         placeholder="Name" 
+                        disabled={loading}
                     />
                     <input 
                         className="border rounded-md p-3" 
