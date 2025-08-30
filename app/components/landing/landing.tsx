@@ -4,6 +4,15 @@ import React from "react";
 import Image from 'next/image';
 
 const Landing = () => {
+<<<<<<< HEAD
+  const handleApplyClick = () => {
+    if (typeof window !== 'undefined') {
+      window.location.href = "/portal";
+    }
+  };
+
+=======
+>>>>>>> e2f5526c6e07f6b8fc7f94b6eab6ea74ae7597c0
   return (
     <div 
       className="h-screen w-full relative overflow-hidden"
