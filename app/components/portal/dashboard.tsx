@@ -207,6 +207,16 @@ const Dashboard = () => {
             Go to form
           </button>
         )}
+
+        <div className="mt-8">
+          <a
+            href="/portal/integrations/github"
+            className="px-6 py-3 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/20"
+            style={{ fontFamily: "'Pilat Extended', Arial, sans-serif" }}
+          >
+            Link GitHub
+          </a>
+        </div>
       </div>
     </div>
   );
