@@ -92,15 +92,26 @@ const Dashboard: React.FC<DashboardProps> = ({ onTeamLeft }) => {
         throw new Error((res as any).error || "Failed to leave team");
       }
 
-      // Update local state so dashboard reflects that the team is gone
+      setShowLeaveModal(false);
+
       setData((prev) => (prev ? { ...prev, team: null } : null));
 
-      // Close modal, notify parent, and emit an event for extra robustness
-      setShowLeaveModal(false);
-      onTeamLeft?.();
-
-      if (typeof window !== "undefined") {
-        window.dispatchEvent(new CustomEvent("team-left"));
+      const refreshed = await fetchDashboard();
+      if (refreshed.ok) {
+        if (!refreshed.data?.team) {
+          onTeamLeft?.();
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("team-left"));
+          }
+        } else {
+          setData(refreshed.data);
+          setError("We couldn't remove you from the team yet. Please try again.");
+        }
+      } else {
+        onTeamLeft?.();
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new CustomEvent("team-left"));
+        }
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to leave team");
