@@ -101,14 +101,6 @@ const Form = ({ onBack, requirePPT = false }: FormProps) => {
     }
   };
 
-  const handleBackToDashboard = () => {
-    setShowDashboard(true);
-  };
-
-  if (showDashboard) {
-    return <Dashboard />;
-  }
-
   return (
     <div className="fixed inset-0 w-screen h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/portal/bg1.svg)' }}>
       {/* Logo top left */}
@@ -230,22 +222,9 @@ const Form = ({ onBack, requirePPT = false }: FormProps) => {
               />
             </div>
           </div>
-          
 
-          {/* Submit and Back Buttons */}
-          <div className="flex justify-between mt-8">
-            <button 
-              className="px-8 py-3 rounded-lg text-white cursor-pointer transition-all duration-200 hover:bg-gray-600" 
-              style={{ 
-                backgroundColor: '#6B7280',
-                fontSize: '16px',
-                fontFamily: "'Pilat Extended', Arial, sans-serif",
-                fontWeight: '400'
-              }}
-              onClick={handleBackToDashboard}
-            >
-              Back
-            </button>
+          {/* Submit Button */}
+          <div className="flex justify-center mt-8">
             <button 
               className="px-12 py-3 rounded-lg text-white cursor-pointer transition-all duration-200 hover:bg-[#4da577] active:scale-95" 
               style={{ 
