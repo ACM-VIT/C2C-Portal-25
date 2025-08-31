@@ -112,7 +112,7 @@ const Footer = () => {
             <div className="w-full sm:w-48 md:w-44 flex flex-col gap-3 md:gap-4">
               <div className="text-[#48ba86] text-sm md:text-base font-light font-['PolySans_Trial'] uppercase">TRACKS</div>
               <div className="flex flex-col gap-1.5 md:gap-2">
-              {["Al SOLUTONS", "ART ATTACK", "DIGITAL DAWN", "I CAN DO IT BETTER", "GAME OVER"].map((item) => (
+              {["AI SOLUTONS", "ART ATTACK", "DIGITAL DAWN", "I CAN DO IT BETTER", "GAME OVER"].map((item) => (
                 <span key={item} className="text-white text-sm md:text-base font-light font-['PolySans_Trial'] uppercase">
                 {item}
                 </span>
@@ -121,7 +121,7 @@ const Footer = () => {
             </div>
 
             {/* GUESTS */}
-            <div className="w-full sm:w-40 md:w-36 flex flex-col gap-3 md:gap-4">
+            {/* <div className="w-full sm:w-40 md:w-36 flex flex-col gap-3 md:gap-4">
               <div className="text-[#48ba86] text-sm md:text-base font-light font-['PolySans_Trial'] uppercase">GUESTS</div>
               <div className="flex flex-col gap-1.5 md:gap-2">
               {["DJ ISAAC", "H M EHRZAAD", "MEENAKSHI"].map((item) => (
@@ -130,13 +130,13 @@ const Footer = () => {
                 </span>
               ))}
               </div>
-            </div>
+            </div> */}
 
             {/* OUR PRODUCTS */}
             <div className="w-full sm:w-40 md:w-28 flex flex-col gap-3 md:gap-4">
-              <div className="text-[#48ba86] text-sm md:text-base font-light font-['PolySans_Trial'] uppercase">OUR PRODUCTS</div>
+              <div className="text-[#48ba86] text-sm md:text-base font-light font-['PolySans_Trial'] uppercase">OUR PROJECTS</div>
               <div className="flex flex-col gap-1.5 md:gap-2">
-                {["ACMONE", "CLI-RPG", "EXAMCOOKER", "CLITOP", "LOCALHOST", "os", "UNIPOOL"].map((item) => (
+                {["ACMONE", "CLI-RPG", "EXAMCOOKER", "CLITOP", "LOCALHOST", "OCS", "UNIPOOL"].map((item) => (
                   <a key={item} className="text-white text-sm md:text-base font-light font-['PolySans_Trial'] uppercase hover:text-yellow-50 transition-colors">
                     {item}
                   </a>
@@ -160,7 +160,7 @@ const Footer = () => {
             <div className="w-full sm:w-28 md:w-20 flex flex-col gap-3 md:gap-4">
               <div className="text-[#48ba86] text-sm md:text-base font-light font-['PolySans_Trial'] uppercase">SPONSORS</div>
               <div className="flex flex-col gap-1.5 md:gap-2">
-                {["ABOUT W", "EVENTS"].map((item) => (
+                {["RUNPOD", "ElevenLabs"].map((item) => (
                   <a key={item} href="#" className="text-white text-sm md:text-base font-light font-['PolySans_Trial'] uppercase hover:text-yellow-50 transition-colors">
                     {item}
                   </a>

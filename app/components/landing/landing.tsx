@@ -3,6 +3,8 @@
 import React from "react";
 import Image from "next/image";
 import TopBar from "./top-bar";
+import { InteractiveHoverButton } from "@/app/components/landing/ui/cta-button";
+import { signIn } from "next-auth/react";
 
 const Landing = () => {
   return (
@@ -113,6 +115,15 @@ const Landing = () => {
           <p className="tagline reflected-text mt-2 invisible sm:visible" aria-hidden="true">
             Don&apos;t just code for the vibes, Code2Create.
           </p>
+
+          <div className="hidden sm:flex mt-4 items-center gap-3">
+            <InteractiveHoverButton onClick={() => signIn("google", { callbackUrl: "/portal" })}>
+              Apply Now
+            </InteractiveHoverButton>
+            {/* <CtaButton onClick={() => signIn("google", { callbackUrl: "/portal" })}>
+              Apply Now
+            </CtaButton> */}
+          </div>
         </div>
 
         {/* Footer text - left */}
