@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import AuthProvider from "@/components/auth-provider";
 
 export const metadata: Metadata = {
-  title: "Portal | c2c",
+  title: "Portal | C2C",
 };
 
 export default function PortalLayout({
