@@ -3,10 +3,12 @@ import DotGrid from './dot-grid';
 
 const Speaker = ({ children }: { children?: React.ReactNode }) => (
     <div id="speakers" className="relative w-full min-h-screen overflow-hidden">
-        <div className="absolute inset-0 w-full h-full -z-1 pointer-events-none" style={{ background: '#1e1e1e' }}>
-            <DotGrid dotSize={1.5} gap={25} baseColor="#a3a3a3" className="w-full h-full" />
+        {/* Gradient background that blends with the page background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a] z-0" />
+        <div className="absolute inset-0 w-full h-full z-10 pointer-events-none">
+            <DotGrid dotSize={3} gap={25} baseColor="#a3a3a3" className="w-full h-full" />
         </div>
-        <div className="relative z-10">
+        <div className="relative z-20">
             <Topper text="speaker" />
             {children}
         </div>
