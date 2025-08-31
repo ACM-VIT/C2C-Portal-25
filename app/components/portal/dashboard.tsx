@@ -8,6 +8,7 @@ import LeaveTeamModal from './leave-team-modal';
 import { fetchDashboard, type DashboardResponse, type UserSummary } from '../../actions/dashboard';
 import { leaveTeam } from "@/app/actions/team";
 import PortalLoader from "./portal-loader";
+import BackChevron from './ui/back-chevron';
 
 interface DashboardProps {
   onTeamLeft?: () => void;
@@ -37,6 +38,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onTeamLeft }) => {
         if (!res.ok) {
           setError(res.error || "Failed to load dashboard");
         } else {
+          setError(null);
           setData(res.data ?? null);
         }
       } catch (err) {
@@ -46,6 +48,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onTeamLeft }) => {
           );
       } finally {
         if (mounted) setLoading(false);
+        clearTimeout(failover);
       }
     })();
     return () => {
@@ -77,8 +80,11 @@ const Dashboard: React.FC<DashboardProps> = ({ onTeamLeft }) => {
       const res = await leaveTeam();
 
       // If leaveTeam returns an object with .ok, respect it
-      if (res && typeof res === "object" && "ok" in res && !res.ok) {
-        throw new Error((res as any).error || "Failed to leave team");
+      if (res && typeof res === "object" && "ok" in res && !(res as { ok: unknown }).ok) {
+        const msg = ("error" in (res as Record<string, unknown>) && typeof (res as Record<string, unknown>).error === 'string')
+          ? (res as Record<string, unknown>).error as string
+          : "Failed to leave team";
+        throw new Error(msg);
       }
 
       setShowLeaveModal(false);
@@ -137,9 +143,10 @@ const Dashboard: React.FC<DashboardProps> = ({ onTeamLeft }) => {
       style={{ backgroundImage: "url(/portal/bg1.svg)" }}
     >
       {/* Logo top left */}
-      <div className="absolute top-6 left-18">
+      <div className="absolute top-6 left-6 sm:left-8">
         <Image src="/portal/logo.svg" alt="Logo" width={200} height={200} />
       </div>
+      <BackChevron className="absolute top-6 left-6" />
 
       {/* Centered content */}
       <div className="flex flex-col items-center justify-center h-full">

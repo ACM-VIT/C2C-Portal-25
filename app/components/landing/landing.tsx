@@ -7,7 +7,7 @@ import TopBar from './top-bar';
 const Landing = () => {
 
   return (
-    <div className="h-screen w-full relative overflow-hidden bg-transparent">
+    <div className="min-h-[640px] h-screen w-full relative overflow-hidden bg-transparent">
       {/* Top Bar */}
       <div className="absolute top-0 left-0 w-full z-30">
         <TopBar />
@@ -43,7 +43,7 @@ const Landing = () => {
       <div className="relative h-full flex flex-col items-center justify-center z-10">
         
         {/* Main Heading with stroke - positioned above logo */}
-        <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-4 w-full max-w-screen-xl" style={{ zIndex: 10 }}>
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 px-4 w-full max-w-screen-xl" style={{ zIndex: 10 }}>
           <h1 
             className="text-center break-words hyphens-auto mb-2 sm:mb-4"
             style={{
@@ -58,7 +58,7 @@ const Landing = () => {
               overflowWrap: 'break-word'
             }}
           >
-            We are the hackathon
+            Code2Create
           </h1>
           <h1 
             className="text-center break-words hyphens-auto"
@@ -74,13 +74,12 @@ const Landing = () => {
               overflowWrap: 'break-word'
             }}
           >
-            Everyone dreams of
           </h1>
         </div>
 
         {/* Main logo positioned like rising sun from mountains - behind mountains */}
         <div
-          className="absolute top-[56%] left-4/7 transform -translate-x-1/2 -translate-y-1/2 animate-floating"
+          className="absolute top-[52%] left-1/2 -translate-x-1/2 -translate-y-1/2 animate-floating"
           style={{ zIndex: 1 }}
         >
           <Image 
@@ -119,7 +118,7 @@ const Landing = () => {
         </div>
 
         {/* Main tagline */}
-        <div className="absolute bottom-1/5 left-1/2 transform -translate-x-1/2 translate-y-full px-4 w-full max-w-screen-xl" style={{ zIndex: 10 }}>
+        <div className="absolute bottom-1/5 left-1/2 -translate-x-1/2 translate-y-full px-4 w-full max-w-screen-xl" style={{ zIndex: 10 }}>
           <p 
             className="text-center break-words hyphens-auto"
             style={{
@@ -139,7 +138,7 @@ const Landing = () => {
 
         {/* Background/faded tagline (reflection) */}
         <div
-          className="absolute bottom-1/6 left-1/2 transform -translate-x-1/2 px-4 w-full max-w-screen-xl"
+          className="absolute bottom-1/6 left-1/2 -translate-x-1/2 px-4 w-full max-w-screen-xl"
           style={{
             bottom: '8%',
             zIndex: 6,
@@ -153,7 +152,7 @@ const Landing = () => {
             style={{
               color: '#BEBEBE',
               fontFamily: 'Trap, Arial, sans-serif',
-              fontSize: 'clamp(14px, 3.2vw, 42px)',
+              fontSize: 'clamp(16px, 3.3vw, 44px)',
               fontWeight: '700',
               lineHeight: 'clamp(120%, 4vw, 130%)',
               opacity: 0.4,

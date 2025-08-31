@@ -13,10 +13,15 @@ export async function getTracks(): Promise<Track[]> {
     cache: 'no-store',
   });
   if (!res.ok) throw new Error('Failed to load tracks');
-  return res.json();
+  const raw = await res.json();
+  return (Array.isArray(raw) ? raw : []).map((t: any) => ({
+    id: (t?.id ?? t?.ID ?? '').toString(),
+    title: t?.title ?? '',
+    description: t?.description ?? undefined,
+  })) as Track[];
 }
 
-export async function submitTeamSubmission(params: { github_url: string; figma_url: string; other: string; track_id: string; }) {
+export async function submitTeamSubmission(params: { ppt_url?: string; description?: string | null; github_url?: string | null; figma_url?: string | null; other?: string | null; track_id: string | null; }) {
   const idToken = await getIdToken();
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/team/submission`, {
     method: 'POST',
@@ -30,4 +35,3 @@ export async function submitTeamSubmission(params: { github_url: string; figma_u
   if (!res.ok) throw new Error(data?.error || 'Failed to submit');
   return data;
 }
-
