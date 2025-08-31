@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import DotGrid from './dot-grid';
 import Topper from './topper';
-import Topper from './topper';
 
 interface TimelineItem {
   id: string;
@@ -76,6 +75,7 @@ const Timeline = () => {
   const [selectedItem, setSelectedItem] = useState<TimelineItem>(timelineData[4]); // Default to Speaker Session
 
   return (
+    <>
     <div id="timeline" className="w-full min-h-screen relative overflow-hidden">
       {/* Gradient background that blends with the page background */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a]" />
@@ -120,19 +120,35 @@ const Timeline = () => {
                     }
                   }}
                 >
-                  <span 
-                    className="font-bold transition-all duration-200 text-sm sm:text-base"
-                    style={{ 
-                      color: '#48BA86',
-                      fontFamily: 'Pilat Extended',
-                      fontSize: 'clamp(12px, 2.5vw, 15.6px)',
-                      fontStyle: 'normal',
-                      fontWeight: 700,
-                      lineHeight: 'normal'
-                    }}
-                  >
-                    {item.id}
-                  </span>
+                  <div className="relative w-10 h-10 sm:w-14 sm:h-14 shrink-0">
+                    <svg viewBox="0 0 100 100" className="absolute inset-0 dash-rotate pointer-events-none">
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="46"
+                        fill="none"
+                        stroke="#48BA86"
+                        strokeWidth="2.4"
+                        strokeDasharray="14 10"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span 
+                        className="font-bold transition-all duration-200 text-sm sm:text-base"
+                        style={{ 
+                          color: '#48BA86',
+                          fontFamily: 'Pilat Extended',
+                          fontSize: 'clamp(12px, 2.8vw, 16px)',
+                          fontStyle: 'normal',
+                          fontWeight: 700,
+                          lineHeight: '1'
+                        }}
+                      >
+                        {item.id}
+                      </span>
+                    </div>
+                  </div>
                   <span 
                     className="font-bold transition-all duration-200 text-lg sm:text-xl"
                     style={{ 
@@ -215,7 +231,22 @@ const Timeline = () => {
           </div>
         </div>
       </div>
-    </div>
+  </div>
+  <style jsx>{`
+      @keyframes dash-rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      .dash-rotate { 
+        animation: dash-rotate 12s linear infinite; 
+        transform-origin: 50% 50%;
+        will-change: transform;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .dash-rotate { animation: none; }
+      }
+    `}</style>
+  </>
   );
 };
 
