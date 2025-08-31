@@ -3,6 +3,7 @@
 import Landing from "./components/landing/landing";
 import { signIn } from "next-auth/react";
 import About from "./components/landing/about";
+import QuotesBanner from "./components/landing/quotes-banner";
 import Topper from "./components/landing/topper";
 import Sponsors from "./components/landing/sponsors";
 import FAQs from "./components/landing/faqs";
@@ -14,6 +15,7 @@ export default function Page() {
       <Landing />
       <Topper text="About C2C" />
       <About />
+      <QuotesBanner />
       <Topper text="sponsor" />
       <Sponsors />
       <Topper text="timeline" />
