@@ -83,7 +83,7 @@ With a culture built on trust and innovation, we&apos;re here to build tools, so
                     We're back with a bang,<br/>but let's flex first!
                 </h1>
 
-            <div className="w-full flex justify-center items-center pt-24 pb-12">
+            <div id="stats" className="w-full flex justify-center items-center pt-24 pb-12">
                 <Image
                     src="/landing/stats.png"
                     alt="ACM Stats"
@@ -95,7 +95,7 @@ With a culture built on trust and innovation, we&apos;re here to build tools, so
                 />
             </div>
             {/* Tracks section below stats image */}
-            <div className="w-full pointer-events-auto">
+            <div id="tracks" className="w-full pointer-events-auto">
                 <Tracks />
             </div>
                 

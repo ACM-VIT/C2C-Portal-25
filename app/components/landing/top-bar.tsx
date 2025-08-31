@@ -16,10 +16,10 @@ export default function TopBar() {
   }, [menuOpen]);
 
   const navLinks = [
-    { href: '#about', label: 'About', hasDropdown: true },
+    { href: '#about', label: 'About', hasDropdown: false },
     { href: '#stats', label: 'Stats', hasDropdown: false },
-    { href: '#tracks', label: 'Tracks', hasDropdown: true },
-    { href: '#timeline', label: 'Timeline', hasDropdown: true },
+    { href: '#tracks', label: 'Tracks', hasDropdown: false },
+    // { href: '#timeline', label: 'Timeline', hasDropdown: false},
     { href: '#sponsors', label: 'Sponsors', hasDropdown: false },
     { href: '#speaker', label: 'Speakers', hasDropdown: false },
     // { href: '/prize-pool', label: 'Prize Pool', hasDropdown: false },

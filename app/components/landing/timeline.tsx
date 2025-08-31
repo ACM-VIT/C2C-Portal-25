@@ -51,7 +51,43 @@ const timelineData: TimelineItem[] = [
   },
 ];
 
+//todo change later when timeline out
+const TIMELINE_COMING_SOON = true as const;
+
 const Timeline = () => {
+  if (TIMELINE_COMING_SOON) {
+    return (
+      <GradientBG>
+        <div id="timeline" className="w-full min-h-screen relative overflow-hidden">
+          <div className="absolute inset-0 z-10">
+            <Topper text="Timeline" />
+          </div>
+          <div className="absolute inset-0 z-0">
+            <DotGrid dotSize={2.5} gap={25} baseColor="#a3a3a3" />
+          </div>
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none">
+            <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 pointer-events-auto transform translate-y-16 sm:translate-y-20 lg:translate-y-24 text-center">
+              <h3
+                className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6"
+                style={{
+                  color: '#4ade80',
+                  fontFamily: 'Trap-Bold, Trap, Arial, sans-serif',
+                  fontSize: 'clamp(28px, 6vw, 50px)',
+                  fontStyle: 'normal',
+                  fontWeight: 700,
+                  lineHeight: 'normal',
+                  letterSpacing: '1.5px'
+                }}
+              >
+                Coming soon...
+              </h3>
+            </div>
+          </div>
+        </div>
+      </GradientBG>
+    );
+  }
+
   const defaultItem = timelineData.find(t => t.id === "05") || timelineData[0];
   const [selectedItem, setSelectedItem] = useState<TimelineItem>(defaultItem); // Default to Speaker Session
 
