@@ -280,7 +280,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onTeamLeft }) => {
             </div>
           ) : (
             <div className="mb-8 sm:mb-12 text-center text-gray-300 px-4 max-w-md" style={{ fontFamily: "'Pilat Extended', Arial, sans-serif" }}>
-              <p className="text-sm sm:text-base">No teammates yet — it's just you for now.</p>
+              <p className="text-sm sm:text-base">No teammates yet — it&apos;s just you for now.</p>
               {team?.code && (
                 <p className="mt-2 text-sm sm:text-base">
                   Share your team code{" "}

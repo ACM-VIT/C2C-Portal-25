@@ -1,6 +1,5 @@
 "use client";
 
-import Image from 'next/image';
 import { useState } from 'react';
 import TeamUp from './team-up';
 import PortalButton from './ui/button';

@@ -23,7 +23,7 @@ export function cleanName(input?: string | null): string {
   if (parts.length === 0) return trimmed;
 
   // sanitize trailing punctuation commonly used
-  let last = parts[parts.length - 1].replace(/[.,;:]$/g, "");
+  const last = parts[parts.length - 1].replace(/[.,;:]$/g, "");
 
   const vitPattern = /^[0-9]{2}[A-Za-z]{2,4}[0-9]{3,4}$/; // e.g. 23BME0453
   const shortAlnum = /^[A-Za-z0-9]{6,12}$/; // fallback: short alnum token

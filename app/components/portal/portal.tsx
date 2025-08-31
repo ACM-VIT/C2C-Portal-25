@@ -3,7 +3,6 @@ import External from './external';
 import Internal from './internal';
 import { useState } from 'react';
 import PortalButton from './ui/button';
-import BackChevron from './ui/back-chevron';
 
 const Portal = () => {
     const [selected, setSelected] = useState<'internal' | 'external' | null>(null);

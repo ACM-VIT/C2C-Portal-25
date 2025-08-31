@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from 'next/image';
 import Dashboard from './dashboard';
 import PortalButton from './ui/button';
 import { joinTeam } from '../../actions/team';

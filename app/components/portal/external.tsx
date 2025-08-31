@@ -321,7 +321,6 @@ const External = ({ onBack }: Props) => {
               onBlur={scheduleHide}
               placeholder={loadingColleges ? "Loading colleges…" : "College's Name"}
               aria-autocomplete="list"
-              aria-expanded={showSuggestions}
               aria-controls="college-suggestions"
             />
 
