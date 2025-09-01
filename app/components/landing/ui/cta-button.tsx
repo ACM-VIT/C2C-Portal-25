@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type InteractiveHoverButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "default" | "simple";
+  variant?: "default" | "simple" | "compact";
 };
 
 export const InteractiveHoverButton = React.forwardRef<
@@ -30,6 +30,18 @@ export const InteractiveHoverButton = React.forwardRef<
           <div className="absolute top-0 z-10 flex h-full w-full translate-x-12 items-center justify-center gap-2 text-black opacity-0 transition-all duration-300 group-hover:-translate-x-5 group-hover:opacity-100">
             <span>{children}</span>
             <ArrowRight />
+          </div>
+        </>
+      ) : variant === "compact" ? (
+        <>
+          <div className="flex items-center">
+            <span className="inline-block transition-all duration-300 group-hover:translate-x-[14px] group-hover:opacity-0 group-hover:text-black">
+              {children}
+            </span>
+          </div>
+          <div className="absolute top-0 z-10 flex h-full w-full translate-x-[14px] items-center justify-center gap-1.5 text-black opacity-0 transition-all duration-300 group-hover:-translate-x-[6px] group-hover:opacity-100">
+            <span>{children}</span>
+            <ArrowRight className="h-3.5 w-3.5" />
           </div>
         </>
       ) : (
