@@ -116,14 +116,16 @@ const Landing = () => {
             Don&apos;t just code for the vibes, Code2Create.
           </p>
 
-          <div className="hidden sm:flex mt-3">
+        <div className="hidden sm:flex mt-3">
             <InteractiveHoverButton
-              onClick={() => signIn("google", { callbackUrl: "/portal" })}
-              className="text-xs sm:text-sm md:text-base px-4 py-2 sm:px-5 sm:py-2.5 md:px-6 md:py-3 rounded-[12px]"
+            onClick={() => signIn("google", { callbackUrl: "/portal" })}
+            className="w-[280px] sm:w-[280px] md:w-[280px] text-sm sm:text-base md:text-lg px-4 py-0 min-h-[48px] rounded-lg bg-black text-white font-bold flex items-center justify-center
+                shadow-[0_0_20px_rgba(72,186,134,0.55)] hover:shadow-[0_0_28px_rgba(72,186,134,0.85)] transition-all duration-300"
+            style={{ boxShadow: "0 0 20px rgba(72,186,134,0.55), 0 0 40px rgba(72,186,134,0.18)" }}
             >
-              Register
+            Register
             </InteractiveHoverButton>
-          </div>
+        </div>
         </div>
 
         {/* Footer text - left */}

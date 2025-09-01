@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { InteractiveHoverButton } from "@/app/components/landing/ui/cta-button";
-import { signIn } from "next-auth/react";
 
 export default function TopBar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -21,16 +19,12 @@ export default function TopBar() {
     { href: "#about", label: "About", hasDropdown: false },
     { href: "#stats", label: "Stats", hasDropdown: false },
     { href: "#tracks", label: "Tracks", hasDropdown: false },
-    // { href: '#timeline', label: 'Timeline', hasDropdown: false},
     { href: "#sponsors", label: "Sponsors", hasDropdown: false },
-    // { href: "#speaker", label: "Speakers", hasDropdown: false },
-    // { href: '#prize-pool', label: 'Prize Pool', hasDropdown: false },
-    // { href: '#contact', label: 'Contact us', hasDropdown: false },
   ];
 
   return (
     <div className="w-full bg-transparent border-b border-white">
-      <div className="max-w-screen-xl mx-auto flex items-center justify-between px-4 md:px-6 py-2 md:py-0 md:h-14">
+      <div className="w-full flex items-center justify-between px-0 sm:px-0 lg:px-0 py-2 md:py-0 md:h-14">
         <div className="flex-shrink-0 border-r border-white pr-4 md:pr-8 py-1 flex items-center">
           <Image
             src="/landing/c2c-logo-with-name.svg"
@@ -39,6 +33,7 @@ export default function TopBar() {
             height={40}
             className="h-8 md:h-10 w-auto"
             loading="eager"
+            style={{ marginLeft: 20 }}
           />
         </div>
 
@@ -102,16 +97,6 @@ export default function TopBar() {
           </ul>
         </nav>
 
-        <div className="flex items-center pl-3 md:pl-0 mr-3 md:mr-6 ml-2 md:ml-4 flex-shrink-0">
-          <InteractiveHoverButton
-            aria-label="Register"
-            onClick={() => signIn("google", { callbackUrl: "/portal" })}
-            className="whitespace-nowrap pointer-events-auto text-xs sm:text-sm md:text-base px-3 py-1.5 sm:px-4 sm:py-2 md:px-5 md:py-2.5 rounded-[12px]"
-          >
-            Register
-          </InteractiveHoverButton>
-        </div>
-
         <div className="md:hidden flex items-center">
           <button
             aria-label="Toggle menu"
@@ -171,7 +156,7 @@ export default function TopBar() {
           </button>
         </div>
 
-        <div className="hidden md:flex flex-shrink-0 border-l border-white pl-4 md:pl-8 py-1 items-center">
+        <div className="hidden md:flex flex-shrink-0 border-l border-white pl-4 md:pl-8 py-1 items-center mr-4">
           <Image
             src="/landing/acm-logo-with-name.svg"
             alt="ACM Logo"
