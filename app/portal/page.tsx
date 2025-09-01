@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import Portal from '@/app/components/portal/portal';
 import TeamUp from '../components/portal/team-up';
 import Dashboard from '../components/portal/dashboard';
@@ -19,14 +20,16 @@ export default function Home() {
   return (
     <AuthReauthGuard>
       <div className="absolute top-6 left-6 z-100 sm:left-8">
-        <Image
-          src="/portal/logo.svg"
-          alt="Logo"
-          width={200}
-          height={200}
-          className="bg-transparent block w-28 sm:w-40 h-auto"
-          draggable={false}
-        />
+        <Link href="/">
+          <Image
+            src="/portal/logo.svg"
+            alt="Logo"
+            width={200}
+            height={200}
+            className="bg-transparent block w-28 sm:w-40 h-auto"
+            draggable={false}
+          />
+        </Link>
       </div>
       <div className="absolute top-6 right-6 z-100 sm:right-8">
         <button
