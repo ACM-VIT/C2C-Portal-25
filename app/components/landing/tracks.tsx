@@ -1,4 +1,5 @@
 "use client";
+//rishit commit farm krta hai or agar ye commit dekh rha hai to fuck you
 import Image from "next/image";
 import GradientBG from "./gradient-bg";
 import DotGrid from "./dot-grid";
