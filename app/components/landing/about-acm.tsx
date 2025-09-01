@@ -98,21 +98,6 @@ const About = ({ children }: { children?: React.ReactNode }) => (
             but let&apos;s flex first!
           </h1>
 
-          {/* Stats Image */}
-          <div className="w-full flex justify-center items-center">
-            <Image
-              src="/landing/statistics.png"
-              alt="ACM Stats"
-              width={1800}
-              height={1200}
-              className="w-full max-w-8xl h-auto pointer-events-auto py-12"
-              draggable={false}
-              loading="lazy"
-              placeholder="blur"
-              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-            />
-          </div>
-
           {/* Children (Tracks) */}
           {children}
         </div>

@@ -8,6 +8,7 @@ import Sponsors from "./components/landing/sponsors";
 import FAQs from "./components/landing/faqs";
 import Timeline from "./components/landing/timeline";
 import AboutACM from "./components/landing/about-acm";
+import Statistics from "./components/landing/statistics";
 import Tracks from "./components/landing/tracks";
 import Footer from "./components/landing/footer";
 import TopBar from "./components/landing/top-bar";
@@ -65,6 +66,9 @@ export default function Page() {
 
           <div className=" flex items-center justify-between flex-col">
             <AboutACM />
+          </div>
+          <div className=" flex items-center justify-between flex-col">
+            <Statistics />
           </div>
           {/* <div className="h-screen flex items-center justify-between flex-col"> */}
             {/* <Bento /> */}

@@ -420,4 +420,5 @@ const DotGrid: React.FC<DotGridProps> = ({
   );
 };
 
-export default DotGrid;
+DotGrid.displayName = 'DotGrid';
+export default React.memo(DotGrid);
