@@ -18,13 +18,36 @@ const Internal = ({ onBack }: Props) => {
         gender: '',
         contactNumber: ''
     });
+    // field-level validation messages
+    const [fieldErrors, setFieldErrors] = useState({
+        registrationNumber: '',
+        contactNumber: ''
+    });
+
+    // regex: two digits + three letters + four digits (e.g. 23BCT0122)
+    const regNoRegex = /^[0-9]{2}[A-Z]{3}[0-9]{4}$/;
+    const validateRegistrationNumber = (val: string) => regNoRegex.test(val.trim());
+    const validatePhoneNumber = (val: string) => {
+        const digits = val.replace(/\D/g, '');
+        const first = parseInt(digits[0], 10);
+        return digits.length === 10 && first >= 6 && first <= 9;
+    };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
+        const { name, value: rawValue } = e.target;
+        // normalize registration number to uppercase as the user types
+        const value = name === 'registrationNumber' ? rawValue.toUpperCase() : rawValue;
         setFormData(prev => ({
             ...prev,
             [name]: value
         }));
+        // clear corresponding field error when user edits
+        if (name === 'registrationNumber' && fieldErrors.registrationNumber) {
+            setFieldErrors(prev => ({ ...prev, registrationNumber: '' }));
+        }
+        if (name === 'contactNumber' && fieldErrors.contactNumber) {
+            setFieldErrors(prev => ({ ...prev, contactNumber: '' }));
+        }
     };
 
     const isFormValid = () => {
@@ -34,6 +57,23 @@ const Internal = ({ onBack }: Props) => {
     };
 
     const handleSubmit = async () => {
+        if (!isFormValid()) {
+            setError('Please fill all fields');
+            return;
+        }
+
+        // validate fields and show inline errors if invalid
+        const regValid = validateRegistrationNumber(formData.registrationNumber);
+        const phoneValid = validatePhoneNumber(formData.contactNumber);
+        if (!regValid || !phoneValid) {
+            setFieldErrors({
+                registrationNumber: regValid ? '' : 'Registration number must be like 12XYZ3456',
+                contactNumber: phoneValid ? '' : 'Phone number must contain 10 digits'
+            });
+            return;
+        }
+
+        // proceed with submit
         if (isFormValid()) {
             setLoading(true);
             setError(null);
@@ -95,6 +135,9 @@ const Internal = ({ onBack }: Props) => {
                         onChange={handleInputChange}
                         placeholder="Registration Number"
                     />
+                    {fieldErrors.registrationNumber && (
+                        <div className="text-red-300 text-sm mt-2">{fieldErrors.registrationNumber}</div>
+                    )}
 
                     <label className="text-sm text-gray-300 mt-3 mb-2">Gender</label>
                     <Select
@@ -118,6 +161,9 @@ const Internal = ({ onBack }: Props) => {
                         onChange={handleInputChange}
                         placeholder="Contact Number"
                     />
+                    {fieldErrors.contactNumber && (
+                        <div className="text-red-300 text-sm mt-2">{fieldErrors.contactNumber}</div>
+                    )}
 
                     <div className="flex justify-center mt-6">
                         <PortalButton onClick={handleSubmit} disabled={!isFormValid() || loading} className={`px-6 py-2 text-[20px] ${isFormValid() && !loading ? '' : 'opacity-50 cursor-not-allowed'}`}>

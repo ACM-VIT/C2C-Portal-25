@@ -102,11 +102,14 @@ const External = ({ onBack }: Props) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
+    universityName: "",
     collegeName: "",
     gender: "",
     contactNumber: "",
   });
 
+  const [unis, setUnis] = useState<College[]>([]);
+  const [loadingUnis, setLoadingUnis] = useState(false);
   const [colleges, setColleges] = useState<College[]>([]);
   const [loadingColleges, setLoadingColleges] = useState(false);
 
@@ -117,14 +120,21 @@ const External = ({ onBack }: Props) => {
   const listRef = useRef<HTMLUListElement | null>(null);
   const hideTimer = useRef<number | null>(null);
 
+  // NEW: college suggestion UI state & refs
+  const [showCollegeSuggestions, setShowCollegeSuggestions] = useState(false);
+  const [activeCollegeIndex, setActiveCollegeIndex] = useState(0);
+  const collegeInputRef = useRef<HTMLInputElement | null>(null);
+  const collegeListRef = useRef<HTMLUListElement | null>(null);
+  const hideCollegeTimer = useRef<number | null>(null);
+
   const GENDER_OPTIONS = [
     { label: "Male", value: "male" },
     { label: "Female", value: "female" },
   ] as const;
   // using shared <Select /> for gender for consistency & accessibility
 
-  // bump cache key since source changed to public/portal/unis.json
-  const COLLEGE_CACHE_KEY = "c2c_colleges_v3_unis";
+  // bump cache key since source changed from portal/unis.json to backend route
+  const COLLEGE_CACHE_KEY = "c2c_unis_v1";
 
   useEffect(() => {
     if (!SUGGESTIONS_ENABLED) return;
@@ -146,7 +156,7 @@ const External = ({ onBack }: Props) => {
             }
           });
           if (items.length) {
-            setColleges(items);
+            setUnis(items);
             return;
           }
         }
@@ -155,26 +165,35 @@ const External = ({ onBack }: Props) => {
     }
 
     (async () => {
-      setLoadingColleges(true);
+      setLoadingUnis(true);
       try {
-        const res = await fetch("/portal/unis.json", { cache: "force-cache" });
+        // call the backend route that serves the university list
+        const res = await fetch(getApiUrl("uni_list"), { cache: "force-cache" });
+        console.log(res);
         if (!res.ok) throw new Error(`Failed to load universities: ${res.status}`);
         const data: unknown = await res.json();
         const items: College[] = [];
-        if (Array.isArray(data)) {
-          (data as Array<{ name?: string; state?: string } | null>).forEach((u, i) => {
-            if (u && typeof u.name === 'string') {
-              items.push({
-                name: u.name,
-                state: typeof u.state === 'string' ? u.state : undefined,
-                id: i,
-              });
-            }
-          });
+        
+        // Handle the actual API response format: {"universities": ["name1", "name2", ...]}
+        if (data && typeof data === 'object' && 'universities' in data) {
+          const universities = (data as { universities: unknown }).universities;
+          if (Array.isArray(universities)) {
+            universities.forEach((u, i) => {
+              if (typeof u === 'string') {
+                items.push({ name: u, id: i });
+              } else if (u && typeof u === 'object' && 'name' in u && typeof u.name === 'string') {
+                items.push({
+                  name: u.name,
+                  state: 'state' in u && typeof u.state === 'string' ? u.state : undefined,
+                  id: i,
+                });
+              }
+            });
+          }
         }
 
         if (items.length) {
-          setColleges(items);
+          setUnis(items);
           try {
             // cache minimal shape to save space
             const cacheList = items.map(({ name, state }) => ({ name, state }));
@@ -192,7 +211,7 @@ const External = ({ onBack }: Props) => {
       } catch {
         // silently fail; user can still type custom value
       } finally {
-        setLoadingColleges(false);
+        setLoadingUnis(false);
       }
     })();
   }, []);
@@ -200,36 +219,88 @@ const External = ({ onBack }: Props) => {
   // Build display names, appending state for duplicates of the same name
   const { displayNames, displayToBase } = useMemo(() => {
     const counts = new Map<string, number>();
-    for (const c of colleges) counts.set(c.name, (counts.get(c.name) || 0) + 1);
+    for (const c of unis) counts.set(c.name, (counts.get(c.name) || 0) + 1);
     const map = new Map<string, string>();
     const names: string[] = [];
-    for (const c of colleges) {
+    for (const c of unis) {
       const isDup = (counts.get(c.name) || 0) > 1;
       const display = isDup && c.state ? `${c.name} - ${c.state}` : c.name;
       names.push(display);
       if (!map.has(display)) map.set(display, c.name);
     }
     return { displayNames: names, displayToBase: map };
-  }, [colleges]);
+  }, [unis]);
 
   const suggestions = useMemo(() => {
-    return rankNames(formData.collegeName, displayNames, 15);
-  }, [formData.collegeName, displayNames]);
+    return rankNames(formData.universityName, displayNames, 15);
+  }, [formData.universityName, displayNames]);
+
+  // NEW: college names & suggestions using same ranker
+  const collegeNames = useMemo(() => colleges.map((c) => c.name), [colleges]);
+  const collegeSuggestions = useMemo(() => {
+    return rankNames(formData.collegeName, collegeNames, 15);
+  }, [formData.collegeName, collegeNames]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (name === "collegeName") {
+    if (name === "universityName") {
+      // user is editing university -> show suggestions and clear previously loaded colleges
       setShowSuggestions(true);
       setActiveIndex(0);
+      setColleges([]);
+      setFormData((prev) => ({ ...prev, collegeName: "" }));
     }
+  };
+
+  // NEW: handle college input changes
+  const handleCollegeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setFormData((prev) => ({ ...prev, collegeName: value }));
+    setShowCollegeSuggestions(true);
+    setActiveCollegeIndex(0);
   };
 
   const pickSuggestion = (value: string) => {
     const base = displayToBase.get(value) || value;
-    setFormData((prev) => ({ ...prev, collegeName: base }));
+    setFormData((prev) => ({ ...prev, universityName: base, collegeName: "" }));
     setShowSuggestions(false);
     setActiveIndex(0);
+
+    (async () => {
+      setLoadingColleges(true);
+      setColleges([]);
+      try {
+        const res = await fetch(getApiUrl(`college/${encodeURIComponent(base)}`), { cache: "force-cache" });
+        if (!res.ok) throw new Error(`Failed to load colleges: ${res.status}`);
+        const data: unknown = await res.json();
+        const items: College[] = [];
+        
+        // Handle the actual API response format: {"colleges": ["name1", "name2", ...]}
+        if (data && typeof data === 'object' && 'colleges' in data) {
+          const colleges = (data as { colleges: unknown }).colleges;
+          if (Array.isArray(colleges)) {
+            colleges.forEach((c, i) => {
+              if (typeof c === "string") {
+                items.push({ name: c, id: i });
+              } else if (c && typeof c === "object" && 'name' in c && typeof c.name === "string") {
+                items.push({
+                  name: c.name,
+                  state: 'state' in c && typeof c.state === "string" ? c.state : undefined,
+                  id: i,
+                });
+              }
+            });
+          }
+        }
+        setColleges(items);
+      } catch {
+        // ignore — user won't be able to select a college if fetch fails
+        setColleges([]);
+      } finally {
+        setLoadingColleges(false);
+      }
+    })();
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -248,15 +319,54 @@ const External = ({ onBack }: Props) => {
     }
   };
 
+  // NEW: college input keyboard handling
+  const onCollegeKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!showCollegeSuggestions || collegeSuggestions.length === 0) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActiveCollegeIndex((i) => Math.min(i + 1, collegeSuggestions.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveCollegeIndex((i) => Math.max(i - 1, 0));
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      setFormData((prev) => ({ ...prev, collegeName: collegeSuggestions[activeCollegeIndex].name }));
+      setShowCollegeSuggestions(false);
+    } else if (e.key === "Escape") {
+      setShowCollegeSuggestions(false);
+    }
+  };
+
   const scheduleHide = () => {
     if (hideTimer.current) window.clearTimeout(hideTimer.current);
     hideTimer.current = window.setTimeout(() => setShowSuggestions(false), 120);
+  };
+
+  const cancelHide = () => {
+    if (hideTimer.current) {
+      window.clearTimeout(hideTimer.current);
+      hideTimer.current = null;
+    }
+  };
+
+  // NEW: schedule hide for college suggestions
+  const scheduleHideCollege = () => {
+    if (hideCollegeTimer.current) window.clearTimeout(hideCollegeTimer.current);
+    hideCollegeTimer.current = window.setTimeout(() => setShowCollegeSuggestions(false), 120);
+  };
+
+  const cancelHideCollege = () => {
+    if (hideCollegeTimer.current) {
+      window.clearTimeout(hideCollegeTimer.current);
+      hideCollegeTimer.current = null;
+    }
   };
 
   // no-op
 
   const isFormValid = () => {
     return (
+      formData.universityName.trim() !== "" &&
       formData.collegeName.trim() !== "" &&
       formData.gender !== "" &&
       formData.contactNumber.trim() !== ""
@@ -316,29 +426,31 @@ const External = ({ onBack }: Props) => {
             </div>
           )}
 
-          <label className="text-sm text-gray-300 mb-2">College Name</label>
+          <label className="text-sm text-gray-300 mb-2">University Name</label>
           <div className="relative">
             <input
               ref={inputRef}
               className="w-full bg-[#111213]/60 border border-white/10 rounded-full px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#48BA86]/40"
               type="text"
-              name="collegeName"
-              value={formData.collegeName}
+              name="universityName"
+              value={formData.universityName}
               onChange={handleInputChange}
               onKeyDown={onKeyDown}
               onFocus={() => setShowSuggestions(true)}
               onBlur={scheduleHide}
-              placeholder={loadingColleges ? "Loading colleges…" : "College's Name"}
+              placeholder={loadingUnis ? "Loading universities…" : "University Name"}
               aria-autocomplete="list"
-              aria-controls="college-suggestions"
+              aria-controls="uni-suggestions"
             />
 
             {showSuggestions && suggestions.length > 0 && (
               <ul
-                id="college-suggestions"
+                id="uni-suggestions"
                 ref={listRef}
                 className="absolute z-20 mt-2 w-full max-h-64 overflow-auto rounded-xl border border-white/10 bg-[#0f1111]/95 backdrop-blur p-1 shadow-lg portal-scrollbar"
                 role="listbox"
+                onMouseEnter={cancelHide}
+                onMouseLeave={scheduleHide}
               >
                 {suggestions.map((s, idx) => (
                   <li
@@ -346,6 +458,7 @@ const External = ({ onBack }: Props) => {
                     role="option"
                     aria-selected={idx === activeIndex}
                     onMouseDown={(e) => e.preventDefault()}
+                    onMouseEnter={() => setActiveIndex(idx)}
                     onClick={() => pickSuggestion(s.name)}
                     className={`px-3 py-2 cursor-pointer rounded-lg ${
                       idx === activeIndex ? "bg-white/10" : "hover:bg-white/5"
@@ -388,6 +501,64 @@ const External = ({ onBack }: Props) => {
             placeholder="Contact Number"
           />
 
+          <label className="text-sm text-gray-300 mt-3 mb-2">College Name</label>
+          <div className="relative">
+            {/* Replaced Select with fuzzy-searchable input + dropdown for colleges */}
+            <input
+              ref={collegeInputRef}
+              className="w-full bg-[#111213]/60 border border-white/10 rounded-full px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#48BA86]/40"
+              type="text"
+              name="collegeName"
+              value={formData.collegeName}
+              onChange={handleCollegeInputChange}
+              onKeyDown={onCollegeKeyDown}
+              onFocus={() => setShowCollegeSuggestions(true)}
+              onBlur={scheduleHideCollege}
+              placeholder={loadingColleges ? "Loading colleges…" : "College Name"}
+              aria-autocomplete="list"
+              aria-controls="college-suggestions"
+            />
+
+            {showCollegeSuggestions && collegeSuggestions.length > 0 && (
+              <ul
+                id="college-suggestions"
+                ref={collegeListRef}
+                className="absolute z-20 mt-2 w-full max-h-56 overflow-auto rounded-xl border border-white/10 bg-[#0f1111]/95 backdrop-blur p-1 shadow-lg portal-scrollbar"
+                role="listbox"
+                onMouseEnter={cancelHideCollege}
+                onMouseLeave={scheduleHideCollege}
+              >
+                {collegeSuggestions.map((s, idx) => (
+                  <li
+                    key={s.name}
+                    role="option"
+                    aria-selected={idx === activeCollegeIndex}
+                    onMouseDown={(e) => e.preventDefault()}
+                    onMouseEnter={() => setActiveCollegeIndex(idx)}
+                    onClick={() => {
+                      setFormData((prev) => ({ ...prev, collegeName: s.name }));
+                      setShowCollegeSuggestions(false);
+                    }}
+                    className={`px-3 py-2 cursor-pointer rounded-lg ${
+                      idx === activeCollegeIndex ? "bg-white/10" : "hover:bg-white/5"
+                    }`}
+                    title={
+                      s.scoreBand === 0
+                        ? "exact match"
+                        : s.scoreBand === 1
+                        ? "starts with"
+                        : s.scoreBand === 2
+                        ? "contains"
+                        : "fuzzy match"
+                    }
+                  >
+                    {s.name}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
           <div className="flex justify-center mt-6">
             <PortalButton
               onClick={handleSubmit}
@@ -406,3 +577,12 @@ const External = ({ onBack }: Props) => {
 };
 
 export default External;
+
+// Helper to construct API URL with a safe same-origin fallback
+function getApiUrl(path: string) {
+  const base = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/+$/, "");
+  // If a public API URL is configured, use it; otherwise use a same-origin path under /api
+  if (base) return `${base}/${path.replace(/^\/+/, "")}`;
+  // fallback to same-origin API endpoint
+  return `/_next/data/${path}`; // minimal safe default (replace if your API route is different)
+}
