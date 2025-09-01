@@ -1,18 +1,18 @@
 "use client";
 
 import React, { useState } from "react";
-import Dashboard from './dashboard';
 import PortalButton from './ui/button';
 import { joinTeam } from '../../actions/team';
 import BackChevron from './ui/back-chevron';
 import Image from 'next/image';
+import { usePortalStore } from "@/app/stores/portal";
 
 interface Props { onBack?: () => void }
 const JoinTeam = ({ onBack }: Props) => {
   const [teamCode, setTeamCode] = useState('');
-  const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const refreshDashboard = usePortalStore((s) => s.refreshDashboard);
 
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTeamCode(e.target.value.toUpperCase());
@@ -24,17 +24,14 @@ const JoinTeam = ({ onBack }: Props) => {
     setError(null);
     try {
       await joinTeam(teamCode.trim());
-      setSubmitted(true);
+      // Refresh store state and let the page switch to dashboard
+      await refreshDashboard();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to join team');
     } finally {
       setLoading(false);
     }
   };
-
-  if (submitted) {
-    return <Dashboard />;
-  }
 
   return (
     <div className="fixed inset-0 w-screen h-screen relative">

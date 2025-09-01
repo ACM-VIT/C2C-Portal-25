@@ -2,17 +2,17 @@
 
 import React, { useState } from "react";
 import Image from 'next/image';
-import Dashboard from './dashboard';
 import { createTeam } from '../../actions/team';
 import BackChevron from './ui/back-chevron';
 import PortalButton from './ui/button';
+import { usePortalStore } from "@/app/stores/portal";
 
 interface Props { onBack?: () => void }
 const CreateTeam = ({ onBack }: Props) => {
   const [teamName, setTeamName] = useState('');
-  const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const refreshDashboard = usePortalStore((s) => s.refreshDashboard);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTeamName(e.target.value);
@@ -25,17 +25,14 @@ const CreateTeam = ({ onBack }: Props) => {
     setError(null);
     try {
       await createTeam(teamName);
-      setSubmitted(true);
+      // Refresh store state and let the page switch to dashboard
+      await refreshDashboard();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create team');
     } finally {
       setLoading(false);
     }
   };
-
-  if (submitted) {
-    return <Dashboard />;
-  }
 
   return (
     <div className="fixed inset-0 w-screen h-screen relative">

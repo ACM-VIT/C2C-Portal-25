@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useCallback, useRef } from "react";
 import PortalButton from './ui/button';
 
 interface LeaveTeamModalProps {
@@ -18,6 +18,16 @@ const LeaveTeamModal: React.FC<LeaveTeamModalProps> = ({
   teamName,
   isProcessing,
 }) => {
+  const lastClickRef = useRef<number>(0);
+
+  const handleConfirm = useCallback(() => {
+    if (isProcessing) return;
+    const now = Date.now();
+    if (now - lastClickRef.current < 700) return;
+    lastClickRef.current = now;
+    onConfirm();
+  }, [isProcessing, onConfirm]);
+
   if (!isOpen) return null;
 
   return (
@@ -25,7 +35,7 @@ const LeaveTeamModal: React.FC<LeaveTeamModalProps> = ({
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
+        onClick={isProcessing ? undefined : onClose}
       />
       
       {/* Centered card (match Join/Create) */}
@@ -70,7 +80,7 @@ const LeaveTeamModal: React.FC<LeaveTeamModalProps> = ({
               Cancel
             </PortalButton>
             <PortalButton
-              onClick={onConfirm}
+              onClick={handleConfirm}
               disabled={isProcessing}
               className={`w-full sm:w-auto px-4 py-2 !text-[15px] sm:!text-[16px] md:!text-[16px] ${isProcessing ? 'opacity-50 cursor-not-allowed' : ''}`}
             >

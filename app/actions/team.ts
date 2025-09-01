@@ -45,8 +45,21 @@ export async function leaveTeam() {
         },
     });
     if (!res.ok) {
-        const e = await res.json().catch(() => ({}));
-        throw new Error(e.error || 'Failed to leave team');
+        let msg = 'Failed to leave team';
+        try {
+          const e = await res.json();
+          if (e && typeof e.error === 'string') msg = e.error;
+        } catch { /* ignore */ }
+        throw new Error(msg);
     }
-    return res.json();
+    if (res.status === 204) {
+      return { ok: true };
+    }
+    const text = await res.text().catch(() => '');
+    if (!text) return { ok: true };
+    try {
+      return JSON.parse(text);
+    } catch {
+      return { ok: true };
+    }
 }
