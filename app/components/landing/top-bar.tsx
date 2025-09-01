@@ -100,9 +100,9 @@ export default function TopBar() {
             ))}
             <li className="flex items-center h-full ml-4">
               <InteractiveHoverButton
-                variant="simple"
+                variant="compact"
                 onClick={() => signIn("google", { callbackUrl: "/portal" })}
-                className="w-[120px] text-[12px] px-3 py-1.5 min-h-[32px] rounded-full font-semibold bg-black/50 hover:bg-black/60 text-white border border-white/30 backdrop-blur-sm transition-colors"
+                className="w-[120px] text-[12px] px-3 py-1.5 min-h-[32px] rounded-full font-semibold flex items-center justify-center bg-[#48BA86] hover:bg-[#3aa874] text-black border border-[#48BA86] transition-colors"
               >
                 Register
               </InteractiveHoverButton>
