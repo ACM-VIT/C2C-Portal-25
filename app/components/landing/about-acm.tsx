@@ -31,6 +31,7 @@ const About = ({ children }: { children?: React.ReactNode }) => (
             height={80}
             className="pointer-events-auto"
             draggable={false}
+            loading="lazy"
           />
 
           {/* Intro paragraph */}
@@ -98,7 +99,7 @@ const About = ({ children }: { children?: React.ReactNode }) => (
           </h1>
 
           {/* Stats Image */}
-          <div id="stats" className="w-full flex justify-center items-center">
+          <div className="w-full flex justify-center items-center">
             <Image
               src="/landing/statistics.png"
               alt="ACM Stats"
@@ -106,7 +107,9 @@ const About = ({ children }: { children?: React.ReactNode }) => (
               height={1200}
               className="w-full max-w-8xl h-auto pointer-events-auto py-12"
               draggable={false}
-              priority
+              loading="lazy"
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
             />
           </div>
 
