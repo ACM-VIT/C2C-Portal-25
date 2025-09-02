@@ -11,18 +11,29 @@ import AuthReauthGuard from '@/components/auth-reauth-guard';
 import PortalLoader from "../components/portal/portal-loader";
 import { signOut } from 'next-auth/react';
 import { LogOut } from 'lucide-react';
+import GithubView from '@/app/components/portal/github/github-view';
 
 export default function Home() {
   const view = usePortalStore((s) => s.view);
   const initialize = usePortalStore((s) => s.initialize);
+  const setView = usePortalStore((s) => s.setView);
+  const dashboard = usePortalStore((s) => s.dashboard);
   useEffect(() => { void initialize(); }, [initialize]);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const url = new URL(window.location.href);
+    const iid = url.searchParams.get('installation_id');
+    if (!iid) return;
+    // Only allow GitHub view when the user is in a team
+    if (dashboard?.team) setView('github');
+  }, [dashboard, setView]);
 
   return (
     <AuthReauthGuard>
       <div className="absolute top-6 left-6 z-100 sm:left-8">
         <Link href="/">
           <Image
-            src="/portal/logo.svg"
+            src="/landing/c2c-logo-with-name.svg"
             alt="Logo"
             width={200}
             height={200}
@@ -48,8 +59,16 @@ export default function Home() {
       {view === 'signup' && <Portal />}
       {view === 'team' && <TeamUp />}
       {view === 'dashboard' && <Dashboard />}
+      {view === 'github' && <GithubView />}
       {view === 'error' && (
-        <div className="min-h-screen grid place-items-center text-red-400">Something went wrong. Please retry.</div>
+        <div className="fixed inset-0 w-screen h-screen relative">
+          <Image src="/portal/bg1.svg" alt="" aria-hidden fill className="object-cover" />
+          <div className="absolute inset-0 grid place-items-center p-4">
+            <div className="text-red-300 bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-center max-w-md">
+              Something went wrong. Please retry.
+            </div>
+          </div>
+        </div>
       )}
     </AuthReauthGuard>
   );

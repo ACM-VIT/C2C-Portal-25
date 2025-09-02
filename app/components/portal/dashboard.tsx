@@ -4,13 +4,13 @@ import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import { Copy } from "lucide-react";
 import Form from "./form";
-import PortalButton from "./ui/button";
 import LeaveTeamModal from "./leave-team-modal";
 import { type UserSummary } from "../../actions/dashboard";
 import PortalLoader from "./portal-loader";
 import BackChevron from "./ui/back-chevron";
 import { cleanName } from "./nameUtils";
 import { usePortalStore } from "@/app/stores/portal";
+import PortalButton from "./ui/button";
 // import Profile from "./profile";
 
 const Dashboard: React.FC = () => {
@@ -23,6 +23,7 @@ const Dashboard: React.FC = () => {
   // const [showProfile, setShowProfile] = useState(false);
   const [showLeaveModal, setShowLeaveModal] = useState(false);
   const [copied, setCopied] = useState(false);
+  const setView = usePortalStore((s) => s.setView);
 
   const team = data?.team ?? null;
   const track = data?.track ?? null;
@@ -315,6 +316,15 @@ const Dashboard: React.FC = () => {
                 Leave team
               </PortalButton>
             )}
+
+            {/* Link GitHub CTA */}
+            {/* <PortalButton
+              onClick={() => setView("github")}
+              className="w-full sm:w-auto px-6 sm:px-8 lg:px-10 py-2.5 sm:py-3 lg:py-3.5"
+              style={{ fontSize: "clamp(14px, 3vw, 18px)" }}
+            >
+              Link GitHub
+            </PortalButton> */}
           </div>
           </div>
         </div>

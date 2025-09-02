@@ -6,10 +6,11 @@ import { fetchInstallationToken } from '@/lib/github';
 const GITHUB_API = 'https://api.github.com';
 
 export async function getInstallUrlAction(origin: string): Promise<string> {
+  // note: server action; always pass absolute origin from client
   const slug = process.env.NEXT_PUBLIC_GH_APP_SLUG;
   if (!slug) throw new Error('Missing NEXT_PUBLIC_GH_APP_SLUG');
   const base = `https://github.com/apps/${encodeURIComponent(slug)}/installations/new`;
-  const params = new URLSearchParams({ redirect_url: `${origin}/portal/integrations/github`, state: 'c2c-gh-install' });
+  const params = new URLSearchParams({ redirect_url: `${origin}/portal`, state: 'c2c-gh-install' });
   return `${base}?${params.toString()}`;
 }
 
@@ -62,4 +63,37 @@ export async function saveInstallationAction(params: { installation_id: string; 
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data?.error || 'Failed to save installation');
   return data;
+}
+
+// Additional repo insights
+export async function getRepoAction(installationId: string, owner: string, repo: string) {
+  const token = await fetchInstallationToken(installationId);
+  return gh<any>(`/repos/${owner}/${repo}`, token);
+}
+
+export async function listBranchesAction(installationId: string, owner: string, repo: string) {
+  const token = await fetchInstallationToken(installationId);
+  return gh<Array<{ name: string; protected?: boolean }>>(`/repos/${owner}/${repo}/branches`, token);
+}
+
+export async function listPullsAction(installationId: string, owner: string, repo: string, state: 'open' | 'closed' | 'all' = 'open') {
+  const token = await fetchInstallationToken(installationId);
+  return gh<Array<{ id: number; number: number; title: string; html_url: string; state: string; user?: { login?: string; avatar_url?: string }; created_at?: string }>>(`/repos/${owner}/${repo}/pulls?state=${state}&per_page=10`, token);
+}
+
+export async function listIssuesAction(installationId: string, owner: string, repo: string, state: 'open' | 'closed' | 'all' = 'open') {
+  const token = await fetchInstallationToken(installationId);
+  const items = await gh<Array<any>>(`/repos/${owner}/${repo}/issues?state=${state}&per_page=10`, token);
+  // Filter out PRs (issues API returns PRs too when they exist)
+  return items.filter((i) => !i.pull_request);
+}
+
+export async function listReleasesAction(installationId: string, owner: string, repo: string) {
+  const token = await fetchInstallationToken(installationId);
+  return gh<Array<{ id: number; tag_name: string; name?: string; draft?: boolean; prerelease?: boolean; html_url: string; published_at?: string }>>(`/repos/${owner}/${repo}/releases?per_page=5`, token);
+}
+
+export async function listLanguagesAction(installationId: string, owner: string, repo: string) {
+  const token = await fetchInstallationToken(installationId);
+  return gh<Record<string, number>>(`/repos/${owner}/${repo}/languages`, token);
 }

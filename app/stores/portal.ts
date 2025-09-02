@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { fetchDashboard, type DashboardResponse } from "@/app/actions/dashboard";
 import { leaveTeam as apiLeaveTeam } from "@/app/actions/team";
 
-type View = "loading" | "signup" | "team" | "dashboard" | "error";
+type View = "loading" | "signup" | "team" | "dashboard" | "github" | "error";
 
 type PortalState = {
   view: View;
