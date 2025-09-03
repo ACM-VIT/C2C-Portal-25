@@ -118,40 +118,57 @@ const Timeline = () => {
             {/* Timeline Content */}
             <div className="flex flex-col xl:flex-row gap-8 sm:gap-10 lg:gap-12 items-start">
               {/* Day buttons */}
-        <div className="flex flex-col sm:flex-row xl:flex-col gap-5 sm:gap-6 xl:gap-8 w-full xl:w-auto overflow-x-auto sm:overflow-x-visible">
-                {days.map((day) => {
+        <div className="flex flex-col sm:flex-row xl:flex-col items-start sm:items-center xl:items-stretch gap-5 sm:gap-6 xl:gap-8 w-full xl:w-auto overflow-x-auto sm:overflow-x-visible">
+                {days.map((day, idx) => {
                   const active = selectedDay.id === day.id;
                   return (
-                    <button
-                      key={day.id}
-          onClick={() => setSelectedDay(day)}
-          className={`flex items-center gap-2 sm:gap-3 px-4 sm:px-5 py-1.5 sm:py-2 transition-all duration-300 ease-in-out text-left min-w-[160px] sm:min-w-[200px] transform hover:scale-105 flex-shrink-0 ${active ? "scale-105" : ""}`}
-                      style={{
-                        borderRadius: "72px",
-                        background: active ? "rgba(72, 186, 134, 0.15)" : "rgba(255, 255, 255, 0.10)",
-                        border: active ? "2px solid #48BA86" : "2px solid #6B7280",
-                      }}
-                    >
-                      <div className="relative w-8 h-8 sm:w-12 sm:h-12 shrink-0">
-                        <svg viewBox="0 0 100 100" className="absolute inset-0 pointer-events-none animate-spin [animation-duration:12s] [transform-origin:50%_50%] motion-reduce:animate-none">
-                          <circle cx="50" cy="50" r="46" fill="none" stroke="#48BA86" strokeWidth="2.4" strokeDasharray="14 10" strokeLinecap="round" />
-                        </svg>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <span
-                            className="font-bold transition-all duration-200 text-xs sm:text-sm"
-                            style={{ color: "#48BA86", fontFamily: "Trap-Bold, Trap, Arial, sans-serif", fontSize: "clamp(10px, 2.2vw, 14px)", fontStyle: "normal", fontWeight: 700, lineHeight: "1" }}
-                          >
-                            {day.id}
-                          </span>
-                        </div>
-                      </div>
-                      <span
-                        className="font-bold transition-all duration-200 text-base sm:text-lg"
-                        style={{ color: "#48BA86", fontFamily: "Trap-Bold, Trap, Arial, sans-serif", fontSize: "clamp(16px, 3.5vw, 22px)", fontStyle: "normal", fontWeight: 700, lineHeight: "normal" }}
+                    <React.Fragment key={day.id}>
+                      <button
+                        onClick={() => setSelectedDay(day)}
+                        className={`relative flex items-center gap-2 sm:gap-3 px-4 sm:px-5 py-1.5 sm:py-2 transition-all duration-300 ease-in-out text-left min-w-[160px] sm:min-w-[200px] transform hover:scale-105 flex-shrink-0 ${active ? "scale-105" : ""}`}
+                        style={{
+                          borderRadius: "72px",
+                          background: active ? "rgba(72, 186, 134, 0.15)" : "rgba(255, 255, 255, 0.10)",
+                          border: active ? "2px solid #48BA86" : "2px solid #6B7280",
+                        }}
                       >
-                        {day.label}
-                      </span>
-                    </button>
+                        <div className="relative w-8 h-8 sm:w-12 sm:h-12 shrink-0">
+                          <svg viewBox="0 0 100 100" className="absolute inset-0 pointer-events-none animate-spin [animation-duration:12s] [transform-origin:50%_50%] motion-reduce:animate-none">
+                            <circle cx="50" cy="50" r="46" fill="none" stroke="#48BA86" strokeWidth="2.4" strokeDasharray="14 10" strokeLinecap="round" />
+                          </svg>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <span
+                              className="font-bold transition-all duration-200 text-xs sm:text-sm"
+                              style={{ color: "#48BA86", fontFamily: "Trap-Bold, Trap, Arial, sans-serif", fontSize: "clamp(10px, 2.2vw, 14px)", fontStyle: "normal", fontWeight: 700, lineHeight: "1" }}
+                            >
+                              {day.id}
+                            </span>
+                          </div>
+                        </div>
+                        <span
+                          className="font-bold transition-all duration-200 text-base sm:text-lg"
+                          style={{ color: "#48BA86", fontFamily: "Trap-Bold, Trap, Arial, sans-serif", fontSize: "clamp(16px, 3.5vw, 22px)", fontStyle: "normal", fontWeight: 700, lineHeight: "normal" }}
+                        >
+                          {day.label}
+                        </span>
+                      </button>
+
+                      {/* Tight connectors touching button edges */}
+                      {idx < days.length - 1 && (
+                        <>
+                          {/* Horizontal connector (sm–lg) */}
+                          <div className="hidden sm:flex xl:hidden items-center -ml-2 -mr-2" aria-hidden>
+                            <div className="h-px w-6 bg-white/30" />
+                            <div className="w-0 h-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-l-[8px] border-l-[#48BA86]" />
+                          </div>
+                          {/* Vertical connector (xl) */}
+                          <div className="hidden xl:flex flex-col items-center self-stretch -mt-2 -mb-2" aria-hidden>
+                            <div className="w-px h-6 bg-white/30" />
+                            <div className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-[#48BA86]" />
+                          </div>
+                        </>
+                      )}
+                    </React.Fragment>
                   );
                 })}
               </div>
