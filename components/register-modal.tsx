@@ -80,17 +80,21 @@ export const RegisterModal: React.FC<ModalProps> = ({
   className,
 }) => {
   // Reusable pill styled like timeline.tsx (static, non-interactive)
-  const StepPill: React.FC<{ id: string; label: React.ReactNode; href?: string }> = ({ id, label, href }) => {
+  const StepPill: React.FC<{ id: string; label: React.ReactNode; href?: string; compact?: boolean; className?: string }> = ({ id, label, href, compact = false, className }) => {
     const pillContent = (
       <div
-        className="relative flex items-center gap-3 sm:gap-3.5 px-4 sm:px-5 py-1.5 sm:py-2 min-w-[220px] max-w-full"
+        className={cn(
+          "relative flex items-center gap-3 sm:gap-3.5 px-4 sm:px-5 py-1.5 sm:py-2 min-w-[220px] max-w-full",
+          compact && "px-3 py-1 min-w-0 min-h-[52px]",
+          className
+        )}
         style={{
           borderRadius: "72px",
           background: "rgba(255, 255, 255, 0.10)",
           border: "2px solid #6B7280",
         }}
       >
-        <div className="relative w-8 h-8 sm:w-10 sm:h-10 shrink-0">
+        <div className={cn("relative shrink-0", compact ? "w-7 h-7" : "w-8 h-8 sm:w-10 sm:h-10") }>
           <svg
             viewBox="0 0 100 100"
             className="absolute inset-0 pointer-events-none animate-spin [animation-duration:12s] [transform-origin:50%_50%] motion-reduce:animate-none"
@@ -99,15 +103,25 @@ export const RegisterModal: React.FC<ModalProps> = ({
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
             <span
-              className="font-bold transition-all duration-200 text-xs sm:text-sm"
-              style={{ color: "#48BA86", fontFamily: "Trap-Bold, Trap, Arial, sans-serif", fontSize: "clamp(10px, 2.2vw, 14px)", fontStyle: "normal", fontWeight: 700, lineHeight: "1" }}
+              className={cn("font-bold transition-all duration-200")}
+              style={{
+                color: "#48BA86",
+                fontFamily: "Trap-Bold, Trap, Arial, sans-serif",
+                fontSize: compact ? "clamp(10px,3.2vw,12px)" : "clamp(10px,2.2vw,14px)",
+                fontStyle: "normal",
+                fontWeight: 700,
+                lineHeight: "1",
+              }}
             >
               {id}
             </span>
           </div>
         </div>
         <span
-          className="font-bold text-white/95 text-sm sm:text-base pr-1"
+          className={cn(
+            "font-bold text-white/95 pr-1",
+            compact ? "leading-[1.15] text-[clamp(12px,3.6vw,15px)]" : "text-sm sm:text-base"
+          )}
           style={{ fontFamily: "Trap-Bold, Trap, Arial, sans-serif" }}
         >
           {label}
@@ -219,7 +233,7 @@ export const RegisterModal: React.FC<ModalProps> = ({
         {/* Modal Content */}
   <div className="px-5 py-6 sm:px-8 sm:py-8">
           {/* Title */}
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white leading-tight mb-2 sm:mb-3 text-center tracking-wide drop-shadow">
+          <h2 className="font-extrabold text-white leading-tight mb-2 sm:mb-3 text-center tracking-wide drop-shadow" style={{ fontSize: 'clamp(20px, 6vw, 34px)' }}>
             {title}
           </h2>
 
@@ -242,61 +256,85 @@ export const RegisterModal: React.FC<ModalProps> = ({
             </div>
           </div>
 
-          {/* Pills row with arrows between */}
-          <div className="hidden md:flex items-center justify-center gap-3 lg:gap-4 mt-3">
+          {/* Pills row with arrows between (stable grid) */}
+          <div className="hidden md:grid grid-cols-[1fr_auto_1fr_auto_1fr] items-center justify-items-center gap-3 lg:gap-4 mt-3">
             <StepPill
               id="01"
               label={<>
                 Head on to <span className="text-emerald-300">graVITas portal</span><span className="hidden 2xl:inline"> (individual registration required)</span>
               </>}
               href={redirectUrl}
+              className="w-full max-w-[300px] min-h-[56px]"
             />
-            <span aria-hidden className="text-emerald-300 drop-shadow-[0_0_6px_rgba(72,186,134,0.6)]">
+            <span aria-hidden className="text-emerald-300 drop-shadow-[0_0_6px_rgba(72,186,134,0.6)] place-self-center">
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M5 12h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 <path d="M13 8l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </span>
-            <StepPill id="02" label={<>Portal opens for team formation <span className="hidden 2xl:inline">(after few days)</span></>} />
-            <span aria-hidden className="text-emerald-300 drop-shadow-[0_0_6px_rgba(72,186,134,0.6)]">
+            <StepPill id="02" label={<>Portal opens for team formation <span className="hidden 2xl:inline">(after few days)</span></>} className="w-full max-w-[300px] min-h-[56px]" />
+            <span aria-hidden className="text-emerald-300 drop-shadow-[0_0_6px_rgba(72,186,134,0.6)] place-self-center">
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M5 12h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 <path d="M13 8l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </span>
-            <StepPill id="03" label={<>Form teams and submit your ideas on the portal</>} />
+            <StepPill id="03" label={<>Form teams and submit your ideas on the portal</>} className="w-full max-w-[300px] min-h-[56px]" />
           </div>
 
-          {/* Mobile layout: stack steps vertically with arrows between pills */}
-          <div className="md:hidden space-y-5 sm:space-y-6 flex flex-col items-center">
-            <div className="flex flex-col items-center">
-              <img src="/register/1.svg" alt="Step 1" className="w-[72%] max-w-[260px] h-auto select-none" draggable={false} />
-              <div className="mt-3">
-                <StepPill id="01" label={<>Head on to <span className="text-emerald-300">graVITas portal</span></>} href={redirectUrl} />
-              </div>
-            </div>
-            <span aria-hidden className="text-emerald-300 drop-shadow-[0_0_6px_rgba(72,186,134,0.6)]">
-              <svg className="w-5 h-5 rotate-90" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 12h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                <path d="M13 8l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </span>
-            <div className="flex flex-col items-center">
-              <img src="/register/2.svg" alt="Step 2" className="w-[72%] max-w-[260px] h-auto select-none" draggable={false} />
-              <div className="mt-3">
-                <StepPill id="02" label={<>Portal opens for team formation</>} />
-              </div>
-            </div>
-            <span aria-hidden className="text-emerald-300 drop-shadow-[0_0_6px_rgba(72,186,134,0.6)]">
-              <svg className="w-5 h-5 rotate-90" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 12h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                <path d="M13 8l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </span>
-            <div className="flex flex-col items-center">
-              <img src="/register/3.svg" alt="Step 3" className="w-[72%] max-w-[260px] h-auto select-none" draggable={false} />
-              <div className="mt-3">
-                <StepPill id="03" label={<>Form teams and submit your ideas</>} />
+          {/* Mobile layout: different UI - vertical spine with 3 steps (same as desktop) */}
+          <div className="md:hidden mt-4">
+            <div className="relative pl-9">
+              {/* Vertical spine */}
+              <div className="absolute left-3.5 top-2 bottom-2 border-l-2 border-emerald-400/60" aria-hidden />
+
+              <div className="space-y-4">
+                {/* Step 01 */}
+                <div className="relative min-h-[42px]">
+                  {/* Connector from spine to pill */}
+                  <div className="absolute top-1/2 -translate-y-1/2 -left-[18px] w-[50px] h-[2px] bg-emerald-400/70" aria-hidden />
+                  <div className="pl-8">
+                    <StepPill
+                      id="01"
+                      compact
+                      className="min-h-[52px]"
+                      label={<span className="block max-w-[260px]">
+                        Head on to <span className="text-emerald-300">graVITas portal</span>
+                        <span className="block text-white/70 font-normal leading-tight" style={{ fontSize: 'clamp(10px,3.1vw,12px)' }}>(individual registration required)</span>
+                      </span>}
+                      href={redirectUrl}
+                    />
+                  </div>
+                </div>
+
+                {/* Step 03 */}
+                <div className="relative min-h-[42px]">
+                  <div className="absolute top-1/2 -translate-y-1/2 -left-[18px] w-[50px] h-[2px] bg-emerald-400/70" aria-hidden />
+                  <div className="pl-8">
+                    <StepPill
+                      id="02"
+                      compact
+                      className="min-h-[52px]"
+                      label={<span className="block max-w-[260px]">
+                        Portal Opens for Team Formation
+                        <span className="block text-white/70 font-normal leading-tight" style={{ fontSize: 'clamp(10px,3.1vw,12px)' }}>(after few days)</span>
+                      </span>}
+                    />
+                  </div>
+                </div>
+
+                {/* Step 03 */}
+                <div className="relative min-h-[42px]">
+                  <div className="absolute top-1/2 -translate-y-1/2 -left-[18px] w-[50px] h-[2px] bg-emerald-400/70" aria-hidden />
+                  <div className="pl-8">
+                    <StepPill
+                      id="03"
+                      compact
+                      className="min-h-[52px]"
+                      label={<span className="block max-w-[260px]">Form teams → Submit ideas on the portal</span>}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
