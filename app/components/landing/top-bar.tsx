@@ -10,7 +10,7 @@ import { RegisterModal, useModal } from "@/components/RegisterModal";
 
 export default function TopBar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const router = useRouter();
+  // const router = useRouter();
   const {closeModal, openModal, isOpen } = useModal();
 
   useEffect(() => {
@@ -240,7 +240,6 @@ export default function TopBar() {
     <RegisterModal
         isOpen={isOpen}
         onClose={closeModal}
-        title="Ready to Build Something Amazing?"
         url="Register at gravitas.vit.ac.in"
         redirectUrl="https://gravitas.vit.ac.in" // Replace with your actual registration URL
       />

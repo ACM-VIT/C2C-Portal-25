@@ -8,7 +8,7 @@ import { REGISTRATIONS_OPEN } from "@/lib/env";
 import { RegisterModal, useModal } from "@/components/RegisterModal";
 
 const Landing = () => {
-  const router = useRouter();
+  // const router = useRouter();
   const {openModal, closeModal, isOpen} = useModal();
   return (
     <div
@@ -190,7 +190,6 @@ const Landing = () => {
       <RegisterModal
             isOpen={isOpen}
             onClose={closeModal}
-            title="Join Code to Create 6.0!"
             url="Register at gravitas.vit.ac.in"
             redirectUrl="https://gravitas.vit.ac.in" // Replace with your actual registration URL
           />

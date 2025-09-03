@@ -86,7 +86,7 @@ const TRACKS_CONTENT = TRACKS.map((track) => ({
 }));
 
 export default function Page() {
-  const router = useRouter();
+  // const router = useRouter();
   useLayoutEffect(() => {
     // ScrollSmoother.create({
     //   wrapper: '#smooth-wrapper',
@@ -129,7 +129,6 @@ export default function Page() {
       <RegisterModal
         isOpen={isOpen}
         onClose={closeModal}
-        title="Ready to Code & Create?"
         url="gravitas.vit.ac.in"
         redirectUrl="https://gravitas.vit.ac.in" // Replace with your actual registration URL
       />
