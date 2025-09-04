@@ -16,7 +16,7 @@ const days: DaySchedule[] = [
       { time: "01:30 PM", text: "Repo init - Reporting Time" },
       {
         time: "03:00 PM",
-        text: "Create Release: v0.1.0 (Inauguration & insightful session by Dr. Meenakshi D'Souza, President, ACM India Council, Hackathon officially starts)",
+        text: "Create Release: v0.1.0 (Inauguration and an insightful session by Dr. Meenakshi D'Souza, President, ACM India Council, Hackathon officially starts)",
       },
       { time: "10:30 PM", text: "A session by RunPod" },
     ],
@@ -191,7 +191,7 @@ const Timeline = () => {
                         <button
                           key={day.id}
                           onClick={() => setSelectedDay(day)}
-                          className={`flex items-center justify-center sm:justify-start gap-2 px-3 sm:px-4 py-2 rounded-full border-2 transition-all duration-300 flex-shrink-0 min-w-[96px] sm:min-w-[140px] ${
+                          className={`flex items  -center justify-center sm:justify-start gap-2 px-3 sm:px-4 py-2 rounded-full border-2 transition-all duration-300 flex-shrink-0 min-w-[96px] sm:min-w-[140px] ${
                             active ? "scale-105" : "hover:scale-105"
                           }`}
                           style={{
