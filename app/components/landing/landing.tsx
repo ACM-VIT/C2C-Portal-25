@@ -11,9 +11,9 @@ const Landing = () => {
   const isAnyModalOpen = useIsAnyModalOpen();
   return (
     <div
-      className="min-h-[640px] w-full relative overflow-hidden bg-transparent md:h-screen"
+      className="w-full relative overflow-hidden bg-transparent h-[var(--app-viewport-h)] md:h-[var(--app-viewport-h)] min-h-[640px]"
       style={{
-        height: "100svh",
+        height: "var(--app-viewport-h)",
         paddingTop: "env(safe-area-inset-top, 0px)",
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
       }}
