@@ -466,7 +466,7 @@ export const RegisterModal: React.FC<ModalProps> = ({
         alignItems: "center",
         justifyContent: "center",
         padding: "1rem",
-        paddingTop: "4rem",
+        paddingTop: "3rem",
       }}
     >
       <div
@@ -485,7 +485,7 @@ export const RegisterModal: React.FC<ModalProps> = ({
         onClick={(e) => e.stopPropagation()}
         style={{
           zIndex: 999999,
-          maxHeight: "calc(100vh - 8rem)",
+          maxHeight: "calc(100vh - 6rem)",
           overflow: "auto",
         }}
       >
