@@ -105,14 +105,13 @@ const PopoutImage: React.FC<{ anchorRef: React.RefObject<HTMLDivElement | null> 
       const next = measure();
       if (next) {
         setRect((prev) => {
-          if (
-            prev &&
-            prev.top === next.top &&
-            prev.left === next.left &&
-            prev.width === next.width &&
-            prev.height === next.height
-          ) {
-            return prev;
+          if (prev) {
+            const tol = 0.75; // ignore tiny jitter under a pixel
+            const sameTop = Math.abs(prev.top - next.top) < tol;
+            const sameLeft = Math.abs(prev.left - next.left) < tol;
+            const sameW = Math.abs(prev.width - next.width) < tol;
+            const sameH = Math.abs(prev.height - next.height) < tol;
+            if (sameTop && sameLeft && sameW && sameH) return prev;
           }
           return next;
         });
@@ -141,24 +140,40 @@ const PopoutImage: React.FC<{ anchorRef: React.RefObject<HTMLDivElement | null> 
 
   const style: React.CSSProperties = {
     position: "fixed",
-    top: rect.top,
-    left: rect.left,
+    top: 0,
+    left: 0,
     width: rect.width,
     height: rect.height,
+    transform: `translate3d(${rect.left}px, ${rect.top}px, 0)`,
     pointerEvents: "none",
     zIndex: 20,
   };
 
   return createPortal(
     <div style={style} aria-hidden>
-      <Image
-        src="/landing/meenakshimaam.png"
-        alt=""
-        width={720}
-        height={900}
-        priority
-        className="transform-gpu will-change-transform absolute bottom-0 left-1/2 -translate-x-1/2 -translate-y-[10%] sm:-translate-y-[12%] md:-translate-y-[14%] w-[90%] sm:w-[88%] h-auto object-contain drop-shadow-[0_22px_44px_rgba(0,0,0,0.6)] select-none"
-      />
+      {(() => {
+        // Use a stable pixel translateY based on measured height and breakpoints
+        const w = typeof window !== "undefined" ? window.innerWidth : 1024;
+        let pct = 0.1; // default
+        if (w >= 768) pct = 0.14; // md
+        else if (w >= 640) pct = 0.12; // sm
+        const translateYPx = Math.round(-rect.height * pct);
+        const imgStyle: React.CSSProperties = {
+          transform: `translate3d(-50%, ${translateYPx}px, 0)`,
+          willChange: "transform",
+        };
+        return (
+          <Image
+            src="/landing/meenakshimaam.png"
+            alt=""
+            width={720}
+            height={900}
+            priority
+            className="absolute bottom-0 left-1/2 w-[90%] sm:w-[88%] h-auto object-contain drop-shadow-[0_22px_44px_rgba(0,0,0,0.6)] select-none transform-gpu"
+            style={imgStyle}
+          />
+        );
+      })()}
     </div>,
     document.body,
   );
