@@ -44,8 +44,9 @@ export default function TopBar() {
     { href: "#stats", label: "Stats", hasDropdown: false },
     { href: "#tracks", label: "Tracks", hasDropdown: false },
     { href: "#timeline", label: "Timeline", hasDropdown: false },
-    { href: "#faqs", label: "FAQs", hasDropdown: false },
+    { href: "#speakers", label: "Speakers", hasDropdown: false },
     { href: "#sponsors", label: "Sponsors", hasDropdown: false },
+    { href: "#faqs", label: "FAQs", hasDropdown: false },
   ];
 
   return (

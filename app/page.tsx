@@ -8,6 +8,7 @@ import Timeline from "./components/landing/timeline";
 import AboutACM from "./components/landing/about-acm";
 import Statistics from "./components/landing/statistics";
 import Footer from "./components/landing/footer";
+import Speaker from "./components/landing/speaker";
 import TopBar from "./components/landing/top-bar";
 import ViewportPortal from "@/components/viewport-portal";
 import { useLayoutEffect } from "react";
@@ -58,34 +59,27 @@ const TRACKS = [
   },
   {
     number: 2,
-    title: "I Can Do It Better",
-    description:
-      "Reimagine and improve widely used software by enhancing usability, adding desired features, or optimizing performance.",
-    svgPath: "/tracks/CanDoBetter.svg",
-  },
-  {
-    number: 3,
     title: "Art Attack",
     description:
       "Build tools that reimagine creative expression through technologies that help create music, art, or media in new and exciting ways.",
     svgPath: "/tracks/Art_Attack.svg",
   },
   {
-    number: 4,
+    number: 3,
     title: "Game Over",
     description:
       "Create experiences that redefine gaming through original games and technologies that improve gameplay, performance, or game development.",
     svgPath: "/tracks/Game_Over.svg",
   },
   {
-    number: 5,
+    number: 4,
     title: "Digital Dawn",
     description:
       "Create solutions that uniquely solve Indian challenges at scale, focusing on affordable and inclusive technology for the next billion users.",
     svgPath: "/tracks/Digital_Dawn.svg",
   },
   {
-    number: 6,
+    number: 5,
     title: "AI Solutions",
     description:
       "Build intelligent systems using RunPod's compute services to create practical and scalable AI solutions for real-world problems.",
@@ -187,9 +181,9 @@ export default function Page() {
               </div>
             </div>
           </div>
-          {/* <div className="min-h-screen flex items-center justify-between flex-col">
+          <div id="speakers" className="min-h-screen flex items-center justify-between flex-col">
             <Speaker />
-          </div> */}
+          </div>
           <div id="timeline" className="h-screen flex items-center justify-between flex-col">
             <Timeline />
           </div>
