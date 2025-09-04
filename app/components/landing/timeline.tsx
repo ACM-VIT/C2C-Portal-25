@@ -3,7 +3,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import DotGrid from "./dot-grid";
 import GradientBG from "./gradient-bg";
-import HeadingText from "./HeadingText";
 
 type DayEntry = { time: string; text: string };
 type DaySchedule = { id: string; label: string; date: string; entries: DayEntry[] };

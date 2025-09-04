@@ -364,9 +364,9 @@ export const RegisterModal: React.FC<ModalProps> = ({
     if (e.target === e.currentTarget) onClose();
   };
 
-  const handleKeyDown = (e: KeyboardEvent) => {
+  const handleKeyDown = React.useCallback((e: KeyboardEvent) => {
     if (e.key === "Escape") onClose();
-  };
+  }, [onClose]);
 
   React.useEffect(() => {
     if (isOpen) {
@@ -420,7 +420,7 @@ export const RegisterModal: React.FC<ModalProps> = ({
         restoredOnceRef.current = true;
       }
     };
-  }, [isOpen]);
+  }, [isOpen, handleKeyDown]);
 
   if (!isOpen || !mounted) return null;
 

@@ -3,13 +3,11 @@
 import React from "react";
 import Image from "next/image";
 import { InteractiveHoverButton } from "@/app/components/landing/ui/cta-button";
-import { useRouter } from "next/navigation";
 import { REGISTRATIONS_OPEN } from "@/lib/env";
-import { RegisterModal, useModal, useIsAnyModalOpen } from "@/components/register-modal";
+import { useModal, useIsAnyModalOpen } from "@/components/register-modal";
 
 const Landing = () => {
-  // const router = useRouter();
-  const { openModal, closeModal, isOpen } = useModal();
+  const { openModal } = useModal();
   const isAnyModalOpen = useIsAnyModalOpen();
   return (
     <div

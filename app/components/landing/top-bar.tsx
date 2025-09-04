@@ -4,14 +4,12 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { InteractiveHoverButton } from "@/app/components/landing/ui/cta-button";
-import { useRouter } from "next/navigation";
 import { REGISTRATIONS_OPEN } from "@/lib/env";
-import { RegisterModal, useModal, useIsAnyModalOpen } from "@/components/register-modal";
+import { useModal, useIsAnyModalOpen } from "@/components/register-modal";
 
 export default function TopBar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  // const router = useRouter();
-  const { closeModal, openModal, isOpen } = useModal();
+  const { openModal } = useModal();
   const isAnyModalOpen = useIsAnyModalOpen();
 
   useEffect(() => {

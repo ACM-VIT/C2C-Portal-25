@@ -12,7 +12,6 @@ import TopBar from "./components/landing/top-bar";
 import ViewportPortal from "@/components/viewport-portal";
 import { useLayoutEffect } from "react";
 import { InteractiveHoverButton } from "./components/landing/ui/cta-button";
-import { useRouter } from "next/navigation";
 import { StickyScroll } from "./components/landing/ui/sticky-scroll-reveal";
 import Image from "next/image";
 import GradientBG from "./components/landing/gradient-bg";
@@ -112,7 +111,6 @@ const TRACKS_CONTENT = TRACKS.map((track) => ({
 }));
 
 export default function Page() {
-  // const router = useRouter();
   useLayoutEffect(() => {
     // ScrollSmoother.create({
     //   wrapper: '#smooth-wrapper',

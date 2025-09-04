@@ -1,12 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { RegisterModal } from "@/components/register-modal";
 
 type ParticipantType = "internal" | "external";
 
-export default function RegisterPage() {
+function RegisterPageContent() {
   const router = useRouter();
   const search = useSearchParams();
 
@@ -23,8 +23,13 @@ export default function RegisterPage() {
     router.push("/");
   };
 
-  return (
-    <RegisterModal isOpen onClose={handleClose} defaultType={defaultType} />
-  );
+  return <RegisterModal isOpen onClose={handleClose} defaultType={defaultType} />;
 }
 
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={null}>
+      <RegisterPageContent />
+    </Suspense>
+  );
+}
