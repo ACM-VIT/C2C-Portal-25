@@ -49,7 +49,8 @@ const buildCurrentFlow = (redirectUrl: string): RegisterFlowConfig => ({
       id: "02",
       label: (
         <>
-          Portal opens for team formation <span className="hidden 2xl:inline">(after few days)</span>
+          Portal opens for team formation{" "}
+          <span className="hidden 2xl:inline">(after few days)</span>
         </>
       ),
     },
@@ -98,12 +99,7 @@ const INTERNAL_FLOW: RegisterFlowConfig = buildCurrentFlow(DEFAULT_REDIRECT_URL)
 
 const EXTERNAL_FLOW: RegisterFlowConfig = {
   ...buildCurrentFlow(DEFAULT_REDIRECT_URL),
-  images: [
-    "/register/1.svg",
-    "/register/external2.svg",
-    "/register/2.svg",
-    "/register/3.svg",
-  ],
+  images: ["/register/1.svg", "/register/external2.svg", "/register/2.svg", "/register/3.svg"],
   steps: [
     {
       id: "01",
@@ -119,7 +115,8 @@ const EXTERNAL_FLOW: RegisterFlowConfig = {
       id: "02",
       label: (
         <>
-          Complete <span className="text-emerald-300">external participant</span> registration/verification
+          Complete <span className="text-emerald-300">external participant</span>{" "}
+          registration/verification
         </>
       ),
     },
@@ -127,7 +124,8 @@ const EXTERNAL_FLOW: RegisterFlowConfig = {
       id: "03",
       label: (
         <>
-          Portal opens for team formation <span className="hidden 2xl:inline">(after few days)</span>
+          Portal opens for team formation{" "}
+          <span className="hidden 2xl:inline">(after few days)</span>
         </>
       ),
     },
@@ -257,7 +255,7 @@ export const RegisterModal: React.FC<ModalProps> = ({
           border: "2px solid #6B7280",
         }}
       >
-  <div className={cn("relative shrink-0", compact ? "w-7 h-7" : "w-8 h-8 sm:w-9 sm:h-9")}> 
+        <div className={cn("relative shrink-0", compact ? "w-7 h-7" : "w-8 h-8 sm:w-9 sm:h-9")}>
           <svg
             viewBox="0 0 100 100"
             className="absolute inset-0 pointer-events-none animate-spin [animation-duration:12s] [transform-origin:50%_50%] motion-reduce:animate-none"
@@ -364,9 +362,12 @@ export const RegisterModal: React.FC<ModalProps> = ({
     if (e.target === e.currentTarget) onClose();
   };
 
-  const handleKeyDown = React.useCallback((e: KeyboardEvent) => {
-    if (e.key === "Escape") onClose();
-  }, [onClose]);
+  const handleKeyDown = React.useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    },
+    [onClose],
+  );
 
   React.useEffect(() => {
     if (isOpen) {
@@ -432,12 +433,12 @@ export const RegisterModal: React.FC<ModalProps> = ({
           redirectUrl: redirectUrl ?? INTERNAL_FLOW.redirectUrl,
         }
       : selectedType === "external"
-      ? {
-          ...EXTERNAL_FLOW,
-          title: title ?? EXTERNAL_FLOW.title,
-          redirectUrl: redirectUrl ?? EXTERNAL_FLOW.redirectUrl,
-        }
-      : null;
+        ? {
+            ...EXTERNAL_FLOW,
+            title: title ?? EXTERNAL_FLOW.title,
+            redirectUrl: redirectUrl ?? EXTERNAL_FLOW.redirectUrl,
+          }
+        : null;
 
   const isPickerView = activeConfig === null;
 
@@ -613,7 +614,10 @@ export const RegisterModal: React.FC<ModalProps> = ({
                       />
                     </div>
                     {idx < activeConfig.steps.length - 1 && (
-                      <div style={{ gridColumn: `${idx * 2 + 2} / span 1` }} className="flex items-center justify-center">
+                      <div
+                        style={{ gridColumn: `${idx * 2 + 2} / span 1` }}
+                        className="flex items-center justify-center"
+                      >
                         <ArrowIcon />
                       </div>
                     )}
@@ -638,7 +642,13 @@ export const RegisterModal: React.FC<ModalProps> = ({
                           aria-hidden
                         />
                         <div className="pl-8">
-                          <StepPill id={s.id} compact className="min-h-[52px]" label={s.label} href={s.href} />
+                          <StepPill
+                            id={s.id}
+                            compact
+                            className="min-h-[52px]"
+                            label={s.label}
+                            href={s.href}
+                          />
                         </div>
                       </div>
                     ))}

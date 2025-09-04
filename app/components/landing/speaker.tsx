@@ -38,7 +38,14 @@ const Speaker = ({ children }: { children?: React.ReactNode }) => (
               </div>
             </div>
             <div className="text-white text-base sm:text-lg md:text-2xl tracking-wide z-10 max-w-3xl">
-              Dr. Meenakshi D&apos;Souza, President of ACM India Council, is a Professor and Head of the Department of Computer Science at IIIT-Bangalore. Over the years, she has taught everything from Automata Theory and Algorithms to Software Testing and Graph Theory, with her NPTEL course on Software Testing alone reaching more than 57,000 learners. With a PhD from the Institute of Mathematical Sciences, Chennai, and prior industry experience at Honeywell, she brings a rare blend of academic depth and practical perspective, along with a strong commitment to building the computing community in India.
+              Dr. Meenakshi D&apos;Souza, President of ACM India Council, is a Professor and Head of
+              the Department of Computer Science at IIIT-Bangalore. Over the years, she has taught
+              everything from Automata Theory and Algorithms to Software Testing and Graph Theory,
+              with her NPTEL course on Software Testing alone reaching more than 57,000 learners.
+              With a PhD from the Institute of Mathematical Sciences, Chennai, and prior industry
+              experience at Honeywell, she brings a rare blend of academic depth and practical
+              perspective, along with a strong commitment to building the computing community in
+              India.
             </div>
           </div>
         </div>
@@ -64,7 +71,9 @@ const PopoutStage: React.FC = () => {
   );
 };
 
-const PopoutImage: React.FC<{ anchorRef: React.RefObject<HTMLDivElement | null> }> = ({ anchorRef }) => {
+const PopoutImage: React.FC<{ anchorRef: React.RefObject<HTMLDivElement | null> }> = ({
+  anchorRef,
+}) => {
   const [mounted, setMounted] = React.useState(false);
   const [rect, setRect] = React.useState<DOMRect | null>(null);
 

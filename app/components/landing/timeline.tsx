@@ -127,7 +127,7 @@ const Timeline = () => {
             <DotGrid dotSize={2.5} gap={25} baseColor="#a3a3a3" />
           </div>
           <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
-            <h1 
+            <h1
               className="text-center text-4xl md:text-6xl lg:text-8xl font-bold mb-8 text-transparent"
               style={{
                 WebkitTextStroke: "2px #ffffff",
@@ -157,11 +157,11 @@ const Timeline = () => {
         <div className="absolute inset-0 z-0">
           <DotGrid dotSize={2.5} gap={25} baseColor="#a3a3a3" />
         </div>
-        
+
         <div className="relative z-10 min-h-screen">
           {/* Header */}
           <div className="pt-8 pb-4 md:pt-16 md:pb-8">
-            <h1 
+            <h1
               className="text-center text-4xl md:text-6xl lg:text-8xl font-bold px-4 text-transparent"
               style={{
                 WebkitTextStroke: "2px #ffffff",
@@ -175,14 +175,13 @@ const Timeline = () => {
           {/* Main Content */}
           <div className="px-4 md:px-8 lg:px-12 max-w-7xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12 items-start">
-              
               {/* Day Selection - Mobile: Horizontal scroll, Desktop: Vertical */}
               <div className="lg:col-span-1">
                 {/* Mobile: Horizontal scroll */}
                 <div className="lg:hidden">
                   <div
                     className="flex gap-3 overflow-x-auto pb-4 scroll-smooth"
-                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                    style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
                     onTouchStart={onTouchStart}
                     onTouchEnd={onTouchEnd}
                   >
@@ -230,12 +229,10 @@ const Timeline = () => {
                             active ? "scale-105" : "hover:scale-105"
                           }`}
                           style={{
-                            background: active 
-                              ? "rgba(72, 186, 134, 0.15)" 
+                            background: active
+                              ? "rgba(72, 186, 134, 0.15)"
                               : "rgba(255, 255, 255, 0.10)",
-                            border: active 
-                              ? "2px solid #48BA86" 
-                              : "2px solid #6B7280",
+                            border: active ? "2px solid #48BA86" : "2px solid #6B7280",
                           }}
                         >
                           <div className="relative w-12 h-12 flex-shrink-0">
@@ -256,7 +253,7 @@ const Timeline = () => {
                               />
                             </svg>
                             <div className="absolute inset-0 flex items-center justify-center">
-                              <span 
+                              <span
                                 className="font-bold text-sm"
                                 style={{
                                   color: "#48BA86",
@@ -267,7 +264,7 @@ const Timeline = () => {
                               </span>
                             </div>
                           </div>
-                          <span 
+                          <span
                             className="font-bold text-lg"
                             style={{
                               color: "#48BA86",
@@ -296,7 +293,7 @@ const Timeline = () => {
                 <div className="p-0 lg:pr-2" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
                   {/* Day Title */}
                   <div className="mb-6 pb-4">
-                    <h2 
+                    <h2
                       className="text-3xl md:text-4xl lg:text-5xl font-bold mb-2"
                       style={{
                         color: "#4ade80",
@@ -307,7 +304,7 @@ const Timeline = () => {
                     >
                       {selectedDay.label}
                     </h2>
-                    <p 
+                    <p
                       className="text-lg md:text-xl lg:text-2xl font-semibold"
                       style={{
                         color: "#FFF",
@@ -321,15 +318,19 @@ const Timeline = () => {
                   </div>
 
                   {/* Schedule Entries */}
-                  <div ref={rightContentRef} className="space-y-4 md:space-y-6" style={{ paddingBottom: bottomPad }}>
+                  <div
+                    ref={rightContentRef}
+                    className="space-y-4 md:space-y-6"
+                    style={{ paddingBottom: bottomPad }}
+                  >
                     {selectedDay.entries.map((entry, idx) => (
-                      <div 
-                        key={idx} 
+                      <div
+                        key={idx}
                         className="flex flex-col sm:flex-row gap-3 sm:gap-6 p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors duration-200"
                       >
                         {/* Time Badge */}
                         <div className="flex-shrink-0">
-                          <span 
+                          <span
                             className="inline-block px-3 py-2 rounded-lg border text-sm md:text-base font-bold"
                             style={{
                               background: "rgba(72, 186, 134, 0.20)",
@@ -341,10 +342,10 @@ const Timeline = () => {
                             {entry.time}
                           </span>
                         </div>
-                        
+
                         {/* Event Description */}
                         <div className="flex-1">
-                          <p 
+                          <p
                             className="text-sm md:text-base lg:text-lg leading-relaxed"
                             style={{
                               color: "rgba(255, 255, 255, 0.90)",
