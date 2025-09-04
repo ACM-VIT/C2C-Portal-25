@@ -119,7 +119,7 @@ const EXTERNAL_FLOW: RegisterFlowConfig = {
       id: "02",
       label: (
         <>
-          Select "Get Started" → "External Participants" → "Independent Participant"
+          Select "Get Started" → "External Participants" → "Independent"
         </>
       ),
     },
@@ -246,10 +246,10 @@ export const RegisterModal: React.FC<ModalProps> = ({
     const pillContent = (
       <div
         className={cn(
-          "group relative flex items-center gap-2.5 sm:gap-3 px-3 sm:px-4 py-1.5 sm:py-2 min-w-[200px] max-w-full",
-          compact && "px-2.5 py-1 min-w-0 min-h-[50px]",
-          isExternal && !compact && "min-w-[200px] sm:min-w-[220px] md:min-w-[240px] px-3 sm:px-3.5 py-1.5 sm:py-2",
-          isExternal && compact && "min-w-[180px] px-2 py-1.5 min-h-[54px]",
+          "group relative flex items-center gap-2 sm:gap-2.5 md:gap-3 px-2.5 sm:px-3 md:px-4 py-1.5 sm:py-2 min-w-[180px] sm:min-w-[200px] max-w-full",
+          compact && "px-2 py-1 min-w-0 min-h-[48px] sm:min-h-[50px]",
+          isExternal && !compact && "min-w-[160px] sm:min-w-[180px] md:min-w-[200px] lg:min-w-[220px] px-2 sm:px-2.5 md:px-3 py-1.5 sm:py-2",
+          isExternal && compact && "min-w-[140px] sm:min-w-[160px] px-1.5 sm:px-2 py-1 sm:py-1.5 min-h-[52px] sm:min-h-[56px]",
           className,
         )}
         style={{
@@ -300,10 +300,10 @@ export const RegisterModal: React.FC<ModalProps> = ({
           className={cn(
             "font-bold text-white/95 pr-1 leading-tight",
             compact
-              ? "leading-[1.15] text-[clamp(10px,3vw,13px)]"
-              : "text-[12px] sm:text-[13px] md:text-[14px]",
-            isExternal && !compact && "text-[11px] sm:text-[12px] md:text-[13px] leading-[1.15] max-w-none",
-            isExternal && compact && "text-[clamp(9px,2.8vw,12px)] leading-[1.1] break-words hyphens-auto",
+              ? "leading-[1.15] text-[clamp(9px,2.8vw,12px)] sm:text-[clamp(10px,3vw,13px)]"
+              : "text-[11px] sm:text-[12px] md:text-[13px] lg:text-[14px]",
+            isExternal && !compact && "text-[9px] sm:text-[10px] md:text-[11px] lg:text-[12px] leading-[1.1] max-w-none",
+            isExternal && compact && "text-[clamp(7px,2.2vw,10px)] sm:text-[clamp(8px,2.5vw,11px)] leading-[1.05] break-words hyphens-auto",
           )}
           style={{ 
             fontFamily: "Trap-Bold, Trap, Arial, sans-serif",
@@ -476,7 +476,7 @@ export const RegisterModal: React.FC<ModalProps> = ({
           "transform transition-all duration-300 ease-out",
           "animate-in fade-in-0 zoom-in-95 duration-300",
           "z-[999999]",
-          "w-[95vw] max-w-[440px] sm:max-w-[680px]",
+          "w-[92vw] sm:w-[95vw] max-w-[420px] sm:max-w-[440px] md:max-w-[680px]",
           isPickerView
             ? "md:max-w-[720px] lg:max-w-[760px] xl:max-w-[800px]"
             : "md:max-w-[960px] lg:max-w-[1200px] xl:max-w-[1280px]",
@@ -502,17 +502,17 @@ export const RegisterModal: React.FC<ModalProps> = ({
         />
 
         {/* Close Button */}
-        <button
+        {/* <button
           onClick={onClose}
           className="absolute top-4 right-4 z-[999999] p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors duration-200 text-white hover:text-gray-100"
           aria-label="Close modal"
           style={{ zIndex: 999999 }}
         >
           <X className="w-5 h-5" />
-        </button>
+        </button> */}
 
         {/* Modal Content */}
-        <div className="px-5 py-6 sm:px-8 sm:py-8">
+        <div className="px-4 py-5 sm:px-5 sm:py-6 md:px-8 md:py-8">
           {activeConfig === null && (
             <div>
               <h2
@@ -521,7 +521,7 @@ export const RegisterModal: React.FC<ModalProps> = ({
               >
                 Tell us who you are
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 place-items-center">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 md:gap-6 place-items-center">
                 {/* Internal */}
                 <StepPill
                   id=""
@@ -531,7 +531,7 @@ export const RegisterModal: React.FC<ModalProps> = ({
                     </>
                   }
                   onClick={() => setSelectedType("internal")}
-                  className="w-[300px] lg:w-[360px] min-h-[60px]"
+                  className="w-[280px] sm:w-[300px] lg:w-[360px] min-h-[56px] sm:min-h-[60px]"
                 />
 
                 {/* External */}
@@ -543,7 +543,7 @@ export const RegisterModal: React.FC<ModalProps> = ({
                     </>
                   }
                   onClick={() => setSelectedType("external")}
-                  className="w-[300px] lg:w-[360px] min-h-[60px]"
+                  className="w-[280px] sm:w-[300px] lg:w-[360px] min-h-[56px] sm:min-h-[60px]"
                 />
               </div>
             </div>
@@ -640,28 +640,28 @@ export const RegisterModal: React.FC<ModalProps> = ({
 
               {/* Mobile: vertical spine with dynamic steps */}
               <div className="md:hidden mt-4">
-                <div className="relative pl-8">
+                <div className="relative pl-5 sm:pl-6">
                   {/* Vertical spine */}
                   <div
-                    className="absolute left-3 top-2 bottom-2 border-l-2 border-emerald-400/60"
+                    className="absolute left-2 sm:left-2.5 top-2 bottom-2 border-l-2 border-emerald-400/60"
                     aria-hidden
                   />
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     {activeConfig.steps.map((s) => (
-                      <div key={s.id} className="relative min-h-[40px]">
+                      <div key={s.id} className="relative min-h-[40px] sm:min-h-[42px]">
                         {/* Connector from spine to pill */}
                         <div
-                          className="absolute top-1/2 -translate-y-1/2 -left-[16px] w-[44px] h-[2px] bg-emerald-400/70"
+                          className="absolute top-1/2 -translate-y-1/2 -left-[12px] sm:-left-[14px] w-[36px] sm:w-[40px] h-[2px] bg-emerald-400/70"
                           aria-hidden
                         />
-                        <div className="pl-6">
+                        <div className="pl-4 sm:pl-5">
                           <StepPill
                             id={s.id}
                             compact
                             isExternal={selectedType === "external"}
                             className={cn(
-                              "min-h-[50px]",
-                              selectedType === "external" && "min-h-[54px]"
+                              "min-h-[52px] sm:min-h-[56px]",
+                              selectedType === "external" && "min-h-[56px] sm:min-h-[60px]"
                             )}
                             label={s.label}
                             href={s.href}
