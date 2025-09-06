@@ -10,8 +10,8 @@ import { usePortalStore } from "../../stores/portal";
 import PortalLoader from "@/app/components/portal/portal-loader";
 import { signOut } from "next-auth/react";
 import { LogOut } from "lucide-react";
-import GithubView from "../../components/portal/github/github-view";
-import { REGISTRATIONS_OPEN, DISCORD_URL } from "@/lib/env";
+import GithubView from "@/app/components/portal/github/github-view";
+import { PORTAL_ENABLED, DISCORD_URL } from "@/lib/env";
 
 export default function Home() {
   const view = usePortalStore((s) => s.view);
@@ -34,9 +34,8 @@ export default function Home() {
     if (dashboard?.team) setView("github");
   }, [dashboard, setView]);
 
-  // Gate the portal when registrations are closed
-  if (!REGISTRATIONS_OPEN) {
-    console.log("Portal component - registrations closed, showing closed message");
+  // Show Coming Soon when portal is disabled via env flag
+  if (!PORTAL_ENABLED) {
     return (
       <div className="fixed inset-0 w-screen h-screen relative">
         <Image src="/portal/bg1.svg" alt="" aria-hidden fill className="object-cover" />
@@ -58,7 +57,7 @@ export default function Home() {
               className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold leading-tight"
               style={{ fontFamily: "Trap, Arial, sans-serif" }}
             >
-              Registrations opening soon
+              Coming soon
             </h1>
             <p
               className="mt-3 sm:mt-4 text-white/80 text-sm sm:text-base md:text-lg max-w-prose mx-auto leading-relaxed"
