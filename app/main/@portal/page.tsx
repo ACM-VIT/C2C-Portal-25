@@ -13,6 +13,7 @@ import { signOut, useSession } from "next-auth/react";
 import { LogOut } from "lucide-react";
 import GithubView from "@/app/components/portal/github/github-view";
 import { PORTAL_ENABLED, DISCORD_URL } from "@/lib/env";
+import DevViewSwitcher from "@/app/components/portal/dev-view-switcher";
 
 export default function Home() {
   const { data: session, status } = useSession()
@@ -130,6 +131,9 @@ export default function Home() {
           </div>
         </div>
       )}
+      
+      {/* Dev Controls */}
+      <DevViewSwitcher />
     </>
   );
 }

@@ -1,10 +1,12 @@
 "use client"
 
 import type React from "react"
-import { useEffect, useState } from "react"
-import PortalLoader from "@/app/components/portal/portal-loader"
-import { getUserData } from "@/app/actions/user"
-import type { GetUserResponse } from "@/types/user"
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import PortalLoader from "@/app/components/portal/portal-loader";
+import { getUserData } from "@/app/actions/user";
+import type { GetUserResponse } from "@/types/user";
+import { getDevRouteOverride } from "@/app/components/portal/dev-view-switcher";
 
 interface SlotRouterProps {
   portal: React.ReactNode
@@ -12,10 +14,23 @@ interface SlotRouterProps {
 }
 
 export default function SlotRouter({ portal, dash }: SlotRouterProps) {
-  const [userData, setUserData] = useState<GetUserResponse | null>(null)
-  const [forcePortal, setForcePortal] = useState(false)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { data: session, status } = useSession();
+  const [userData, setUserData] = useState<GetUserResponse | null>(null);
+  const [forcePortal, setForcePortal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [, forceUpdate] = useState({});
+
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "development") return;
+    
+    const interval = setInterval(() => {
+      forceUpdate({});
+    }, 100); // Check for dev override changes
+    
+    return () => clearInterval(interval);
+  }, []);
+
 
   useEffect(() => {
     getUserData()
@@ -50,9 +65,12 @@ export default function SlotRouter({ portal, dash }: SlotRouterProps) {
   const rounds = userData?.user?.team?.rounds ?? []
   const roundsCount = Array.isArray(rounds) ? rounds.length : 0
   // If forcePortal is true (User not found) OR roundsCount is 0 or 1 -> show portal.
-  const shouldShowDash = !forcePortal && roundsCount > 1
+  const shouldShowDash = !forcePortal && roundsCount > 1;
 
-  console.log("[v0] SlotRouter - shouldShowDash:", shouldShowDash, "roundsCount:", roundsCount)
-
-  return <>{shouldShowDash ? dash : portal}</>
+  // Check for dev override
+  const devOverride = process.env.NODE_ENV === "development" ? getDevRouteOverride() : "auto";
+  const finalShouldShowDash = devOverride === "auto" ? shouldShowDash : devOverride === "dash";
+    
+  return <>{finalShouldShowDash ? dash : portal}</>;
 }
+
