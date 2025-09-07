@@ -7,6 +7,7 @@ import BentoGrid from "@/app/components/dash/bento-grid";
 import ProfileView from "@/app/components/dash/profile";
 import { useDashStore } from "@/app/stores/dash";
 import DashGradientBG from "@/app/components/dash/gradient-bg";
+import DevViewSwitcher from "@/app/components/portal/dev-view-switcher";
 
 export default function DashPage() {
   useLayoutEffect(() => {
@@ -57,6 +58,8 @@ export default function DashPage() {
             </div>
           </div>
       </footer>
+
+      <DevViewSwitcher />
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import PortalLoader from "@/app/components/portal/portal-loader";
 import { getUserData } from "@/app/actions/user";
 import type { GetUserResponse } from "@/types/user";
+import { getDevRouteOverride } from "@/app/components/portal/dev-view-switcher";
 
 interface SlotRouterProps {
   portal: React.ReactNode;
@@ -17,6 +18,18 @@ export default function SlotRouter({ portal, dash }: SlotRouterProps) {
   const [forcePortal, setForcePortal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [, forceUpdate] = useState({});
+
+  // Force re-render when dev override changes
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "development") return;
+    
+    const interval = setInterval(() => {
+      forceUpdate({});
+    }, 100); // Check for dev override changes
+    
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     getUserData().then(data => {
@@ -51,6 +64,11 @@ export default function SlotRouter({ portal, dash }: SlotRouterProps) {
   const roundsCount = Array.isArray(rounds) ? rounds.length : 0;
   // If forcePortal is true (User not found) OR roundsCount is 0 or 1 -> show portal.
   const shouldShowDash = !forcePortal && roundsCount > 1;
+
+  // Check for dev override
+  const devOverride = process.env.NODE_ENV === "development" ? getDevRouteOverride() : "auto";
+  const finalShouldShowDash = devOverride === "auto" ? shouldShowDash : devOverride === "dash";
     
-  return <>{shouldShowDash ? dash : portal}</>;
+  return <>{finalShouldShowDash ? dash : portal}</>;
 }
+
