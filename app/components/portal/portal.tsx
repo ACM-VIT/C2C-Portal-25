@@ -14,7 +14,7 @@ const Portal = ({ userEmail }: { userEmail?: string | null }) => {
   const isVitStudentEmail = emailToCheck ? /@vitstudent\.ac\.in$/i.test(emailToCheck.trim()) : false;
   const whitelist_enabled = process.env.NEXT_PUBLIC_WHITELIST_ENABLED === "true";
 
-  console.log("Portal userEmail:", userEmail);
+  // console.log("Portal userEmail:", userEmail);
 
     if (selected === null && userEmail) {
       const isVitStudent = /@vitstudent\.ac\.in$/i.test(userEmail.trim());
