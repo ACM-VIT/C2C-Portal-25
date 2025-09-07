@@ -6,6 +6,7 @@ import { useDashStore } from "@/app/stores/dash";
 
 export default function ProfileView() {
   const setView = useDashStore((s) => s.setView);
+  const userName = useDashStore((s) => s.dashboard?.user?.name);
 
   return (
     <div className="flex flex-col items-center w-full min-h-screen bg-[#18181B]">
@@ -27,7 +28,7 @@ export default function ProfileView() {
         className="mb-8 text-center text-white font-bold text-[40px] leading-none"
         style={{ fontFamily: "DM Sans, sans-serif" }}
       >
-        Hello Name
+        Hello {userName || "User"}
       </div>
       <div className="w-full flex justify-center mb-8">
         <Lanyard />
@@ -38,4 +39,3 @@ export default function ProfileView() {
     </div>
   );
 }
-

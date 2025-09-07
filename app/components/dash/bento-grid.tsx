@@ -111,14 +111,14 @@ export default function BentoGrid() {
 
             {/* Second button box */}
             <div className="border-emerald-500 bg-[#060f0b] rounded-lg border-2 col-span-8 row-span-4 p-4 flex flex-col items-center col-start-7">
-              <ButtonBox text="Submit your idea" btnText="Form" />
+              <ButtonBox text="Submit your idea" btnText="Form" onClick={() => setView("form")} />
             </div>
           </div>
         </div>
 
         {/* Desktop grid - hidden on small screens, visible on md+ */}
-        <div className="hidden md:flex md:justify-center md:px-4">
-          <div className="grid grid-cols-14 grid-rows-24 gap-5 w-full mx-auto max-w-[80%] py-8">
+        <div className="hidden md:block md:px-4">
+          <div className="grid grid-cols-14 grid-rows-24 gap-5 w-full mx-auto max-w-none py-8">
             <div className="col-span-11 row-span-5">
               <TimerInfo timer="12 : 21 : 12" heading="Review 0" info="lorem iajnfewjnfljenflqwn" />
             </div>
@@ -227,7 +227,7 @@ export default function BentoGrid() {
             </div>
 
             <div className="border-emerald-500 bg-[#060f0b] border-2 col-span-5 row-span-4 p-8 flex flex-col items-center gap-4 rounded-lg">
-              <ButtonBox text="Submit your ideas" btnText="Form" />
+              <ButtonBox text="Submit your ideas" btnText="Form" onClick={() => setView("form")} />
             </div>
           </div>
         </div>

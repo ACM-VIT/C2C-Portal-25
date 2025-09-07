@@ -5,55 +5,29 @@ import InputBox from "@/app/components/form/InputBox";
 import ImgBox from "@/app/components/form/ImgBox";
 import TopBar from "@/app/components/dash/top-bar";
 
-export default function Home() {
-  const [teamType, setTeamType] = useState("");
+export function FormContent() {
   const [selectedTrack, setSelectedTrack] = useState<number | null>(null);
-  const [techStack, setTechStack] = useState<string[]>([
+  const [techStack] = useState<string[]>([
     "HTML",
     "React native",
     "Javascript",
   ]);
-  const [newTech, setNewTech] = useState<string>("");
-
-  const addTech = (): void => {
-    if (newTech.trim() && !techStack.includes(newTech.trim())) {
-      setTechStack([...techStack, newTech.trim()]);
-      setNewTech("");
-    }
-  };
-
-  const removeTech = (techToRemove: string): void => {
-    setTechStack(techStack.filter((tech) => tech !== techToRemove));
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-    if (e.key === "Enter") {
-      addTech();
-    }
-  };
+  const [newTech] = useState<string>("");
 
   interface TechTagProps {
     tech: string;
     onRemove: () => void;
   }
 
-  const TechTag: React.FC<TechTagProps> = ({ tech, onRemove }) => {
+  const TechTag: React.FC<TechTagProps> = ({ tech }) => {
     return (
-        
-      <div className="bg-gray-600 text-white px-3 py-1 rounded-md flex items-center gap-2 text-sm">
-        
+      <div className="bg-gray-600 text-white px-3 py-1 rounded-md flex items-center gap-2 text-sm opacity-80">
         {tech}
-        <button onClick={onRemove} className="text-gray-300 hover:text-white">
-          ×
-        </button>
       </div>
     );
   };
 
   return (
-    // <div>
-    //     <TopBar />
-    <LampDemo>
       <div className="w-full flex justify-center pt-[275px]">
         
         <div className="w-[90%] text-white">
@@ -67,10 +41,10 @@ export default function Home() {
           <div className="w-[60%] h-[250px] mx-auto mt-[50px] p-2 font-bold">
             <h2 className="text-[30px] text-left mb-8">Team Type</h2>
             <div className="flex justify-between">
-              <button className="bg-[rgba(57,75,67,1)] text-[rgba(166,163,163,1)] text-[22px] px-4 py-2 w-[344px] h-[87px] rounded-lg border-2 border-emerald-500">
+              <button className="bg-[rgba(57,75,67,1)] text-[rgba(166,163,163,1)] text-[22px] px-4 py-2 w-[344px] h-[87px] rounded-lg border-2 border-emerald-500" disabled aria-disabled>
                 Internal Participant
               </button>
-              <button className="bg-[rgba(6,15,11,1)] text-[rgba(166,163,163,1)] text-[22px] px-4 py-2 w-[344px] h-[87px] rounded-lg border-2 border-emerald-500">
+              <button className="bg-[rgba(6,15,11,1)] text-[rgba(166,163,163,1)] text-[22px] px-4 py-2 w-[344px] h-[87px] rounded-lg border-2 border-emerald-500" disabled aria-disabled>
                 External Participant
               </button>
             </div>
@@ -79,18 +53,18 @@ export default function Home() {
           <div className="w-[60%] h-[250px] mx-auto mt-[20px] p-2 font-bold">
             <h2 className="text-[30px] text-left mb-8">Team Name</h2>
             <div className="flex w-full">
-              <InputBox placeholder="Hackers"></InputBox>
+              <InputBox placeholder="Hackers" readOnly disabled></InputBox>
             </div>
           </div>
 
           <div className="w-[60%] h-[75vh] mx-auto mt-[20px] p-2 font-bold">
             <h2 className="text-[30px] text-left mb-3">Team Members</h2>
             <div className="flex w-full flex-col">
-              <InputBox placeholder="Enter Teammate 1..."></InputBox>
-              <InputBox placeholder="Enter Teammate 2..."></InputBox>
-              <InputBox placeholder="Enter Teammate 3..."></InputBox>
-              <InputBox placeholder="Enter Teammate 4..."></InputBox>
-              <InputBox placeholder="Enter Teammate 5..."></InputBox>
+              <InputBox placeholder="Enter Teammate 1..." readOnly disabled></InputBox>
+              <InputBox placeholder="Enter Teammate 2..." readOnly disabled></InputBox>
+              <InputBox placeholder="Enter Teammate 3..." readOnly disabled></InputBox>
+              <InputBox placeholder="Enter Teammate 4..." readOnly disabled></InputBox>
+              <InputBox placeholder="Enter Teammate 5..." readOnly disabled></InputBox>
             </div>
           </div>
 
@@ -126,7 +100,7 @@ export default function Home() {
                     img={track.img}
                     title={track.title}
                     selected={selectedTrack === idx}
-                    onClick={() => setSelectedTrack(idx)}
+                    onClick={() => { /* read-only */ }}
                   />
                 ))}
               </div>
@@ -136,7 +110,7 @@ export default function Home() {
             <div className="w-[60%] mx-auto p-2 font-bold">
               <h2 className="text-[30px] text-left mb-3">Project Title</h2>
               <div className="flex w-full">
-                <InputBox placeholder="Enter Project Title..."></InputBox>
+                <InputBox placeholder="Enter Project Title..." readOnly disabled></InputBox>
               </div>
             </div>
 
@@ -148,6 +122,8 @@ export default function Home() {
                   className="w-full h-32 bg-[rgba(6,15,11,1)] border-2 border-emerald-500 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-emerald-400 resize-none"
                   placeholder="Enter Project Description in 50 words..."
                   rows={4}
+                  readOnly
+                  disabled
                 />
               </div>
             </div>
@@ -160,25 +136,20 @@ export default function Home() {
                   className="w-full h-[58px] bg-[rgba(57,75,67,1)] border-2 border-emerald-500 rounded-lg px-4 py-3 pr-12 text-white placeholder-gray-400 focus:outline-none focus:border-emerald-400"
                   placeholder="Find your tech stack..."
                   value={newTech}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setNewTech(e.target.value)
-                  }
-                  onKeyDown={handleKeyPress}
+                  readOnly
+                  disabled
                 />
                 <button
-                  onClick={addTech}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white opacity-60 cursor-not-allowed"
+                  disabled
+                  aria-disabled
                 >
                   🔍
                 </button>
               </div>
               <div className="flex flex-wrap gap-2 mb-4">
                 {techStack.map((tech: string) => (
-                  <TechTag
-                    key={tech}
-                    tech={tech}
-                    onRemove={() => removeTech(tech)}
-                  />
+                  <TechTag key={tech} tech={tech} onRemove={() => {}} />
                 ))}
               </div>
             </div>
@@ -195,11 +166,14 @@ export default function Home() {
                   className="flex-1 bg-[rgba(6,15,11,1)] border-2 h-[87px] border-emerald-500 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-emerald-400"
                   placeholder="Upload Idea in a PPT/PDF format. File should be under 5MB..."
                   readOnly
+                  disabled
                 />
                 <div className="inline-flex">
                   <button
                     type="button"
-                    className="border-2 border-emerald-500 rounded-lg px-4 h-[87px] py-3 flex justify-center items-center ml-2"
+                    className="border-2 border-emerald-500 rounded-lg px-4 h-[87px] py-3 flex justify-center items-center ml-2 opacity-60 cursor-not-allowed"
+                    disabled
+                    aria-disabled
                   >
                     <img src="/Group.png" alt="Upload" className="w-10 h-10" />
                   </button>
@@ -207,7 +181,9 @@ export default function Home() {
               </div>
               <button
                 type="button"
-                className="bg-emerald-600 hover:bg-emerald-700 h-[87px] text-white px-6 py-2 rounded-lg transition-colors"
+                className="bg-emerald-600 h-[87px] text-white px-6 py-2 rounded-lg opacity-60 cursor-not-allowed"
+                disabled
+                aria-disabled
               >
                 Download Template
               </button>
@@ -219,12 +195,16 @@ export default function Home() {
               <div className="flex w-[99%] items-center gap-2">
                 <input
                   type="url"
-                  className="flex-1 bg-[rgba(6,15,11,1)] border-2 h-[87px] border-emerald-500 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-emerald-400"
+                  className="flex-1 bg-[rgba(6,15,11,1)] border-2 h-[87px] border-emerald-500 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-emerald-400 disabled:opacity-60"
                   placeholder="Upload GitHub Link..."
+                  readOnly
+                  disabled
                 />
                 <button
                   type="button"
-                  className="border-2 border-emerald-500 rounded-lg h-[87px] px-4 py-3 flex justify-center items-center ml-2"
+                  className="border-2 border-emerald-500 rounded-lg h-[87px] px-4 py-3 flex justify-center items-center ml-2 opacity-60 cursor-not-allowed"
+                  disabled
+                  aria-disabled
                 >
                   <img src="/Group.png" alt="Upload" className="w-10 h-10" />
                 </button>
@@ -237,13 +217,17 @@ export default function Home() {
               <div className="flex w-[99%] items-center gap-2">
                 <input
                   type="url"
-                  className="flex-1 bg-[rgba(6,15,11,1)] border-2 border-emerald-500 h-[87px] rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-emerald-400"
+                  className="flex-1 bg-[rgba(6,15,11,1)] border-2 border-emerald-500 h-[87px] rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-emerald-400 disabled:opacity-60"
                   placeholder="Upload Figma Link..."
+                  readOnly
+                  disabled
                 />
                 <div className="inline-flex">
                   <button
                     type="button"
-                    className="border-2 border-emerald-500 rounded-lg h-[87px] px-4 py-3 flex justify-center items-center ml-2"
+                    className="border-2 border-emerald-500 rounded-lg h-[87px] px-4 py-3 flex justify-center items-center ml-2 opacity-60 cursor-not-allowed"
+                    disabled
+                    aria-disabled
                   >
                     <img src="/Group.png" alt="Upload" className="w-10 h-10" />
                   </button>
@@ -259,13 +243,17 @@ export default function Home() {
               <div className="flex w-[99%] items-center gap-2">
                 <input
                   type="url"
-                  className="flex-1 bg-[rgba(6,15,11,1)] border-2 h-[87px] border-emerald-500 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-emerald-400"
+                  className="flex-1 bg-[rgba(6,15,11,1)] border-2 h-[87px] border-emerald-500 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-emerald-400 disabled:opacity-60"
                   placeholder="Upload Google Drive Link..."
+                  readOnly
+                  disabled
                 />
                 <div className="inline-flex">
                   <button
                     type="button"
-                    className="border-2 border-emerald-500 rounded-lg h-[87px] px-4 py-3 flex justify-center items-center ml-2"
+                    className="border-2 border-emerald-500 rounded-lg h-[87px] px-4 py-3 flex justify-center items-center ml-2 opacity-60 cursor-not-allowed"
+                    disabled
+                    aria-disabled
                   >
                     <img src="/Group.png" alt="Upload" className="w-10 h-10" />
                   </button>
@@ -274,8 +262,14 @@ export default function Home() {
             </div>
         </div>
       </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <LampDemo>
+      <FormContent />
     </LampDemo>
-    // </div>
   );
 }
 
