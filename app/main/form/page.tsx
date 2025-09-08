@@ -1,13 +1,16 @@
 "use client";
 import LampDemo from "@/app/components/form/ui/lamp";
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import InputBox from "@/app/components/form/InputBox";
 import ImgBox from "@/app/components/form/ImgBox";
 import { useDashStore } from "@/app/stores/dash";
 import ViewBox from "@/app/components/form/ViewBox";
 import { updateTeam, UpdateTeamInput } from "@/app/actions/update_team";
+import UpdateSuccessModal from "@/app/components/form/update-success-modal";
 
 export function FormContent() {
+  const router = useRouter();
     // const view = useDashStore((s) => s.view);
     const data = useDashStore((s) => s.dashboard);
     // const error = useDashStore((s) => s.error);
@@ -43,6 +46,7 @@ export function FormContent() {
 
     console.log("Initial tech stack:", techStackTags, team?.tech_stack);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showUpdatedModal, setShowUpdatedModal] = useState(false);
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
     const [uploadStatus, setUploadStatus] = useState<string>("");
 
@@ -108,7 +112,7 @@ export function FormContent() {
                 techStack: techStackTags.length > 0 ? techStackTags : null,
             };
             await updateTeam(input);
-            alert("Team updated successfully!");
+            setShowUpdatedModal(true);
         } catch (error) {
             console.error("Failed to update team:", error);
             alert("Failed to update team. Please try again.");
@@ -195,6 +199,7 @@ export function FormContent() {
     };
 
   return (
+    <>
       <div className="w-full flex justify-center pt-[5px] px-4">
         
         <div className="w-full max-w-6xl text-white">
@@ -377,15 +382,14 @@ export function FormContent() {
               </div>
             </div>
 
-            {/* Idea Submission Section */}
+            {/* Idea Submission Section (temporarily disabled)
             <div className="w-full max-w-4xl mx-auto mt-[20px] p-2 sm:p-4 font-bold">
               <div className="w-full">
                 <h2 className="text-[24px] sm:text-[28px] md:text-[30px] text-left mb-3 text-white">Idea Submission</h2>
                 <p className="text-zinc-500 text-lg sm:text-xl mb-6 sm:mb-8">Download the template PPT, fill in your idea details, and upload your completed file here.</p>
                 
-                {/* Upload Area and Button Container */}
                 <div className="flex flex-col sm:flex-row gap-4 mb-6">
-                  {/* Upload Area */}
+                  
                   <label htmlFor="file-upload" className="cursor-pointer flex-1">
                     <div className="h-20 bg-neutral-950 rounded-2xl border border-green-400 hover:border-green-300 transition-colors flex items-center justify-center px-4">
                       <div className="text-center text-neutral-500 text-sm sm:text-lg font-medium">
@@ -393,11 +397,9 @@ export function FormContent() {
                       </div>
                     </div>
                   </label>
-
-                  {/* Upload Button */}
                   <label htmlFor="file-upload" className="cursor-pointer">
                     <div className="w-full sm:w-20 h-20 bg-neutral-950 rounded-2xl border border-green-400 hover:border-green-300 transition-colors flex items-center justify-center">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      
                       <img
                         src="/form/upload.svg"
                         alt="Upload"
@@ -417,7 +419,7 @@ export function FormContent() {
                   className="hidden"
                 />
 
-                {/* Download Template Button */}
+                
                 <button
                   onClick={handleDownloadTemplate}
                   className="w-full sm:w-60 h-12 bg-neutral-950 rounded-2xl border border-green-400 hover:border-green-300 transition-colors flex items-center justify-center mb-4"
@@ -425,7 +427,6 @@ export function FormContent() {
                   <div className="text-zinc-500 text-lg font-bold hover:text-zinc-400 transition-colors">Download Template</div>
                 </button>
 
-                {/* Status Message */}
                 {uploadStatus && (
                   <div className="w-full text-center text-sm text-green-400 mb-4">
                     {uploadStatus}
@@ -433,6 +434,7 @@ export function FormContent() {
                 )}
               </div>
             </div>
+            */}
 
             {/* <div className="w-[60%] mx-auto mt-[20px] p-2 font-bold">
               <h2 className="text-[30px] text-left mb-3">Your Idea</h2>
@@ -556,6 +558,11 @@ export function FormContent() {
             </div> ) : null}
         </div>
       </div>
+      <UpdateSuccessModal
+        isOpen={showUpdatedModal}
+        onClose={() => setShowUpdatedModal(false)}
+      />
+    </>
   );
 }
 export default function Home() {
