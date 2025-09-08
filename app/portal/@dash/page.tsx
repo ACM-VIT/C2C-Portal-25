@@ -9,7 +9,7 @@ import { useDashStore } from "@/app/stores/dash";
 import DashGradientBG from "@/app/components/dash/gradient-bg";
 import DevViewSwitcher from "@/app/components/portal/dev-view-switcher";
 import PortalLoader from "@/app/components/portal/portal-loader";
-import { FormContent } from "@/app/main/form/page";
+import { FormContent } from "@/app/portal/form/page";
 import { LampOverlay } from "@/app/components/form/ui/lamp";
 import BottomBar from "@/app/components/dash/bottom-bar";
 import { signOut } from "next-auth/react";
