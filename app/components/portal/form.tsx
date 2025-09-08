@@ -5,6 +5,7 @@ import Image from "next/image";
 import { getTracks, submitTeamSubmission, type Track } from "../../actions/submission";
 import BackChevron from "./ui/back-chevron";
 import PortalButton from "./ui/button";
+import { usePortalStore } from "@/app/stores/portal";
 
 interface FormProps {
   onBack?: () => void;
@@ -32,6 +33,7 @@ const Form = ({ onBack, requirePPT = false, embedded = false, onClose }: FormPro
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const refreshDashboard = usePortalStore((s) => s.refreshDashboard);
   // const [acknowledgeLock, setAcknowledgeLock] = useState(false);
 
   const handleInputChange = (
@@ -65,7 +67,7 @@ const Form = ({ onBack, requirePPT = false, embedded = false, onClose }: FormPro
   const valid = Boolean(
     formData.track_id && formData.track_id !== "" &&
     formData.title && formData.title !== "" &&
-    // when PPT is required ensure a File is present
+    // when PDF is required ensure a File is present
     (!requirePPT || Boolean(pptFile)),
   );
 
@@ -133,7 +135,12 @@ const Form = ({ onBack, requirePPT = false, embedded = false, onClose }: FormPro
         track_id: selectedTrackId,
         title: formData.title,
       });
-      setSuccess("Submission saved");
+      await refreshDashboard();
+      if (onClose) {
+        onClose();
+      } else {
+        setSuccess("Submission saved");
+      }
       // Optionally clear file input on success
       setPptFile(null);
     } catch (err) {
@@ -201,11 +208,11 @@ const Form = ({ onBack, requirePPT = false, embedded = false, onClose }: FormPro
           />
         </div>
 
-        {/* PPT File input (required or optional based on requirePPT) */}
+        {/* PDF File input (required or optional based on requirePPT) */}
         <div>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
             <label className="block text-sm text-gray-300">
-              PPT / PDF Upload {requirePPT ? "(required)" : "(optional)"}
+              PDF Upload {requirePPT ? "(required)" : "(optional)"}
             </label>
             <a
               href="/C2C_Template.pptx"
@@ -246,7 +253,7 @@ const Form = ({ onBack, requirePPT = false, embedded = false, onClose }: FormPro
             <input
               ref={fileInputRef}
               type="file"
-              accept=".pdf,.ppt,.pptx,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation"
+              accept=".pdf,application/pdf"
               onChange={handleFileChange}
               className="hidden"
               disabled={submitting}
@@ -294,11 +301,18 @@ const Form = ({ onBack, requirePPT = false, embedded = false, onClose }: FormPro
 
         {/* Description (optional) */}
         <div>
+          <div className="flex justify-between items-center mb-2">
+            <label className="block text-sm text-gray-300">Description (optional)</label>
+            <span className="text-xs text-gray-400">
+              {formData.description.length}/1000
+            </span>
+          </div>
           <textarea
             name="description"
             value={formData.description}
             onChange={handleInputChange}
             placeholder="Short description about your submission (optional)"
+            maxLength={1000}
             className="w-full p-3 rounded-lg bg-gray-700/80 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:border-[#5EBF94]"
             style={{ fontFamily: "'Pilat Extended', Arial, sans-serif", fontSize: "14px" }}
             rows={3}
