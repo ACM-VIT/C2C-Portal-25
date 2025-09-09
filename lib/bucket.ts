@@ -89,9 +89,9 @@ export async function upload(
 
 /**
  * Generate a signed URL (v4) for reading an object using the viewing credentials.
- * expiresInSeconds defaults to 3600 (1 hour).
+ * expiresInSeconds defaults to 7 days.
  */
-export async function getSignedUrl(destination: string, expiresInSeconds = 3600): Promise<string> {
+export async function getSignedUrl(destination: string, expiresInSeconds = 7 * 24 * 60 * 60): Promise<string> {
 	const bucketName = process.env.GCS_BUCKET_NAME || process.env.BUCKET_NAME;
 	if (!bucketName) throw new Error('GCS_BUCKET_NAME (or BUCKET_NAME) env var must be set.');
 
