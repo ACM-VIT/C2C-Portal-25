@@ -17,8 +17,7 @@ export async function POST(req: Request) {
 
     await upload(buffer, dest, { contentType: file.type });
 
-    // Return a signed viewing URL (default 1 hour). Increase as needed.
-    const signedUrl = await getSignedUrl(dest, 60 * 60);
+    const signedUrl = await getSignedUrl(dest, 7 * 24 * 60 * 60);
 
     return new NextResponse(JSON.stringify({ url: signedUrl, path: dest }), {
       status: 200,

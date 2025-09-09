@@ -14,13 +14,15 @@ interface SlotRouterProps {
   portal: React.ReactNode
   dash: React.ReactNode
   reject: React.ReactNode
+  no_active_round: React.ReactNode
 }
 
-export default function SlotRouter({ portal, dash, reject }: SlotRouterProps) {
+export default function SlotRouter({ portal, dash, reject, no_active_round }: SlotRouterProps) {
   const { data: session } = useSession();
   const [userData, setUserData] = useState<GetUserResponse | null>(null);
   const [dashboardData, setDashboardData] = useState<DashboardResponse | null>(null);
   const [forcePortal, setForcePortal] = useState(false);
+  const [userNotFound, setUserNotFound] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [, forceUpdate] = useState({});
@@ -49,6 +51,7 @@ export default function SlotRouter({ portal, dash, reject }: SlotRouterProps) {
           setDashboardData(dashboardResponse.data);
         } else if (dashboardResponse.status === 404) {
           // Treat missing user as portal flow
+          setUserNotFound(true);
           setForcePortal(true);
         } else if (dashboardResponse.error) {
           setError(dashboardResponse.error);
@@ -57,6 +60,7 @@ export default function SlotRouter({ portal, dash, reject }: SlotRouterProps) {
         if (err instanceof Error) {
           if (err.message === "User not found") {
             // Treat "User not found" as portal (no team/rounds)
+            setUserNotFound(true);
             setForcePortal(true);
           } else {
             setError(err.message);
@@ -87,7 +91,15 @@ export default function SlotRouter({ portal, dash, reject }: SlotRouterProps) {
   // Check if current team round and active round are the same (promotion eligibility)
   const currentTeamRound = dashboardData?.current_team_round;
   const activeRound = dashboardData?.active_round;
+  if (!activeRound) {
+    // If user is not found, show portal instead of "coming soon"
+    if (userNotFound) {
+      return <>{portal}</>;
+    }
+    return <>{no_active_round}</>;
+  }
   const isPromoted = currentTeamRound?.id === activeRound?.id;
+
 
   const dontShowPromotions = !PROMOTIONS_LIVE;
   const shouldForcePortal = forcePortal || dontShowPromotions;
@@ -95,6 +107,8 @@ export default function SlotRouter({ portal, dash, reject }: SlotRouterProps) {
   const devOverride = process.env.NODE_ENV === "development" ? getDevRouteOverride() : "auto";
   
   let finalView: "portal" | "dash" | "reject" = "portal";
+
+  console.log("stuff", { roundsCount, isPromoted, PROMOTIONS_LIVE, shouldForcePortal, devOverride });
   
   if (!shouldForcePortal && roundsCount > 1) {
     if (PROMOTIONS_LIVE) {
@@ -116,4 +130,3 @@ export default function SlotRouter({ portal, dash, reject }: SlotRouterProps) {
     
   return <>{finalView === "dash" ? dash : portal}</>;
 }
-
