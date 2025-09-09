@@ -22,6 +22,7 @@ export default function SlotRouter({ portal, dash, reject, no_active_round }: Sl
   const [userData, setUserData] = useState<GetUserResponse | null>(null);
   const [dashboardData, setDashboardData] = useState<DashboardResponse | null>(null);
   const [forcePortal, setForcePortal] = useState(false);
+  const [userNotFound, setUserNotFound] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [, forceUpdate] = useState({});
@@ -50,6 +51,7 @@ export default function SlotRouter({ portal, dash, reject, no_active_round }: Sl
           setDashboardData(dashboardResponse.data);
         } else if (dashboardResponse.status === 404) {
           // Treat missing user as portal flow
+          setUserNotFound(true);
           setForcePortal(true);
         } else if (dashboardResponse.error) {
           setError(dashboardResponse.error);
@@ -58,6 +60,7 @@ export default function SlotRouter({ portal, dash, reject, no_active_round }: Sl
         if (err instanceof Error) {
           if (err.message === "User not found") {
             // Treat "User not found" as portal (no team/rounds)
+            setUserNotFound(true);
             setForcePortal(true);
           } else {
             setError(err.message);
@@ -89,6 +92,10 @@ export default function SlotRouter({ portal, dash, reject, no_active_round }: Sl
   const currentTeamRound = dashboardData?.current_team_round;
   const activeRound = dashboardData?.active_round;
   if (!activeRound) {
+    // If user is not found, show portal instead of "coming soon"
+    if (userNotFound) {
+      return <>{portal}</>;
+    }
     return <>{no_active_round}</>;
   }
   const isPromoted = currentTeamRound?.id === activeRound?.id;
