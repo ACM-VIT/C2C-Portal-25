@@ -5,7 +5,17 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import PortalButton from './portal/ui/button'
 
-export default function Coming_Soon() {
+interface ComingSoonProps {
+    title?: string
+    message?: string
+    showForUserNotFound?: boolean
+}
+
+export default function Coming_Soon({ 
+    title = "Result coming soon", 
+    message = "The result is not out yet.\nWe are working hard to bring it to you soon!",
+    showForUserNotFound = true 
+}: ComingSoonProps = {}) {
     const router = useRouter()
 
     return (
@@ -20,9 +30,14 @@ export default function Coming_Soon() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
-                        <h1 className="text-3xl font-bold text-yellow-400 mb-3">Result coming soon</h1>
+                        <h1 className="text-3xl font-bold text-yellow-400 mb-3">{title}</h1>
                         <p className="text-gray-300 leading-relaxed">
-                            The result is not out yet.<br></br> We are working hard to bring it to you soon!
+                            {message.split('\n').map((line, index) => (
+                                <React.Fragment key={index}>
+                                    {line}
+                                    {index < message.split('\n').length - 1 && <br />}
+                                </React.Fragment>
+                            ))}
                         </p>
                     </div>
                     <div className="flex flex-col sm:flex-row justify-center gap-4">

@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     template: "%s | Code2Create",
   },
   description:
-    "Code2Create (C2C) is ACM-VIT's flagship 48-hour national hackathon hosted at VIT Vellore, India. Team up with peers, tackle real-world challenges with mentorship, and prototype impactful products across Build for Bharat, Art Attack, Game Over, I Can Do It Better, and AI Solutions — in partnership with RunPod and ElevenLabs.",
+    "Code2Create (C2C) is ACM-VIT's flagship 48-hour national hackathon hosted at VIT Vellore, India. Team up with peers, tackle real-world challenges with mentorship, and prototype impactful products across Digital Dawn, Art Attack, Game Over, I Can Do It Better, and AI Solutions — in partnership with RunPod and ElevenLabs.",
   applicationName: "Code2Create",
   authors: [{ name: "ACM-VIT" }],
   creator: "ACM-VIT",
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
     "prizes",
     "showcase talent",
     "demo",
-    "Build for Bharat",
+    "Digital Dawn",
     "Art Attack",
     "Game Over",
     "I Can Do It Better",
@@ -96,7 +96,7 @@ export const metadata: Metadata = {
     url: "/",
     title: "Code2Create - ACM-VIT Hackathon",
     description:
-      "ACM-VIT's flagship 48-hour national hackathon at VIT Vellore featuring tracks like Build for Bharat, Art Attack, Game Over, I Can Do It Better, and AI Solutions.",
+      "ACM-VIT's flagship 48-hour national hackathon at VIT Vellore featuring tracks like Digital Dawn, Art Attack, Game Over, I Can Do It Better, and AI Solutions.",
     siteName: "Code2Create",
     images: [
       {
@@ -112,7 +112,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Code2Create - ACM-VIT Hackathon",
     description:
-      "Build across tracks like Build for Bharat, Art Attack, Game Over, I Can Do It Better, and AI Solutions - with partners RunPod and ElevenLabs.",
+      "Build across tracks like Digital Dawn, Art Attack, Game Over, I Can Do It Better, and AI Solutions - with partners RunPod and ElevenLabs.",
     images: ["/opengraph.png"],
   },
   alternates: {
