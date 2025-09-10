@@ -20,7 +20,10 @@ export default function ProfileView() {
   const teamName = cleanName(dashboard?.team?.name) || "";
   const teammates = useMemo(
     () => (dashboard?.teammates || [])
-      .map((t) => cleanName(t.name || t.email || ""))
+      .map((t) => {
+        const name = cleanName(t.name || t.email || "");
+        return name.split(" ")[0];
+      })
       .filter(Boolean),
     [dashboard]
   );
@@ -30,7 +33,12 @@ export default function ProfileView() {
     email,
     contact,
     teamName,
-    [teammates[0] || "", teammates[1] || "", teammates[2] || "", teammates[3] || ""]
+    [
+      teammates[0]?.split(" ")[0] || "",
+      teammates[1]?.split(" ")[0] || "",
+      teammates[2]?.split(" ")[0] || "",
+      teammates[3]?.split(" ")[0] || ""
+    ]
   ];
 
   const [isSmall, setIsSmall] = useState(false);
@@ -72,7 +80,12 @@ export default function ProfileView() {
         {isSmall ? (
           <div className="w-full flex flex-col sm:flex-row items-center justify-center gap-4 px-4">
             <IDCard name={userName} mailId={email} phone={contact} />
-            <IDCardBack name={teamName || "Team"} members={[teammates[0] || "", teammates[1] || "", teammates[2] || "", teammates[3] || ""] as [string,string,string,string]} />
+            <IDCardBack name={teamName || "Team"} members={[
+              teammates[0]?.split(" ")[0] || "",
+              teammates[1]?.split(" ")[0] || "",
+              teammates[2]?.split(" ")[0] || "",
+              teammates[3]?.split(" ")[0] || ""
+            ] as [string,string,string,string]} />
           </div>
         ) : (
           <div className="w-full" style={{ minHeight: "70vh" }}>
