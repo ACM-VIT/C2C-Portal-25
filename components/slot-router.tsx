@@ -120,20 +120,20 @@ export default function SlotRouter({ portal, dash, reject, no_active_round }: Sl
   
   let finalView: "portal" | "dash" | "reject" = "portal";
 
-  console.log("SlotRouter Debug:", { 
-    roundsCount, 
-    isPromoted, 
-    PROMOTIONS_LIVE, 
-    shouldForcePortal, 
-    devOverride,
-    currentTeamRoundId: currentTeamRound?.id,
-    activeRoundId: activeRound?.id,
-    currentTeamRoundNumber: currentTeamRound?.round_number,
-    activeRoundNumber: activeRound?.round_number,
-    userNotFound,
-    forcePortal,
-    dontShowPromotions
-  });
+  // console.log("SlotRouter Debug:", { 
+  //   roundsCount, 
+  //   isPromoted, 
+  //   PROMOTIONS_LIVE, 
+  //   shouldForcePortal, 
+  //   devOverride,
+  //   currentTeamRoundId: currentTeamRound?.id,
+  //   activeRoundId: activeRound?.id,
+  //   currentTeamRoundNumber: currentTeamRound?.round_number,
+  //   activeRoundNumber: activeRound?.round_number,
+  //   userNotFound,
+  //   forcePortal,
+  //   dontShowPromotions
+  // });
   
   if (!shouldForcePortal && roundsCount >= 1) {
     if (PROMOTIONS_LIVE) {
