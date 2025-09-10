@@ -96,6 +96,18 @@ export default function SlotRouter({ portal, dash, reject, no_active_round }: Sl
     if (userNotFound) {
       return <>{portal}</>;
     }
+    
+    if (PROMOTIONS_LIVE && currentTeamRound?.end_time) {
+      const currentTime = new Date();
+      const roundEndTime = new Date(currentTeamRound.end_time);
+      
+      if (currentTime > roundEndTime) {
+        return <>{reject}</>;
+      } else {
+        return <>{dash}</>;
+      }
+    }
+    
     return <>{no_active_round}</>;
   }
   const isPromoted = currentTeamRound?.id === activeRound?.id;

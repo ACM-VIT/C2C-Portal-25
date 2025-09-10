@@ -13,7 +13,8 @@ export type UserSummary = {
   role?: string;
   team_id?: string | null;
   room_number?: string | null;
-block?: string | null;
+  block?: string | null;
+  hosteller?: boolean;
 };
 
 export type TeamInfo = {
