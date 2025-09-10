@@ -1,7 +1,5 @@
 {
     "MH-A": "MH-A",
-    "MH-B": "MH-B",
-    "MH-B annex": "MH-B annex",
     "MH-C": "MH-C",
     "MH-D": "MH-D",
     "MH-D annex": "MH-D annex",
@@ -28,5 +26,7 @@
     "LH-F": "LH-F",
     "LH-G": "LH-G",
     "LH-H": "LH-H",
-    "LH-J": "LH-J"
+    "LH-J": "LH-J",
+    "LH-K": "LH-K",
+    "LH-RGT": "LH-RGT"
 }
