@@ -11,7 +11,8 @@ import Footer from "./components/landing/footer";
 import Speaker from "./components/landing/speaker";
 import TopBar from "./components/landing/top-bar";
 import ViewportPortal from "@/components/viewport-portal";
-import { useLayoutEffect } from "react";
+import { FeedbackModal } from "@/components/feedback-modal";
+import { useLayoutEffect, useEffect, useState, Suspense } from "react";
 import { InteractiveHoverButton } from "./components/landing/ui/cta-button";
 import { StickyScroll } from "./components/landing/ui/sticky-scroll-reveal";
 import Image from "next/image";
@@ -20,28 +21,17 @@ import DotGrid from "./components/landing/dot-grid";
 import HeadingText from "./components/landing/HeadingText";
 import Tracks from "./components/landing/tracks";
 import { REGISTRATIONS_OPEN } from "@/lib/env";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
-const DesktopRegisterButton = () => {
-  const router = useRouter();
-
+const DesktopFeedbackButton = ({ onClick }: { onClick: () => void }) => {
   return (
     <div className="hidden md:flex fixed left-1/2 -translate-x-1/2 bottom-[8%] z-[9999]">
-      {REGISTRATIONS_OPEN ? (
-        <InteractiveHoverButton
-          onClick={() => router.push('/portal')}
-          className="w-[280px] text-lg px-5 py-2 min-h-[48px] rounded-full font-bold flex items-center justify-center bg-[#48BA86] hover:bg-[#3aa874] text-black border border-[#48BA86] transition-colors"
-        >
-          Register Now
-        </InteractiveHoverButton>
-      ) : (
-        <span
-          className="inline-block w-[280px] text-lg px-5 py-2 min-h-[48px] rounded-full font-bold text-white border border-white/30 bg-black/30 backdrop-blur-sm text-center"
-          aria-live="polite"
-        >
-          Registrations opening soon
-        </span>
-      )}
+      <InteractiveHoverButton
+        onClick={onClick}
+        className="w-[280px] text-lg px-5 py-2 min-h-[48px] rounded-full font-bold flex items-center justify-center bg-[#48BA86] hover:bg-[#3aa874] text-black border border-[#48BA86] transition-colors"
+      >
+        Share Feedback
+      </InteractiveHoverButton>
     </div>
   );
 };
@@ -108,7 +98,30 @@ const TRACKS_CONTENT = TRACKS.map((track) => ({
   ),
 }));
 
+function FeedbackSearchParamGate({ onOpen }: { onOpen: (email: string) => void }) {
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const feedbackId = searchParams.get('id');
+    if (feedbackId) {
+      try {
+        const decodedEmail = atob(feedbackId);
+        if (decodedEmail.includes('@') && decodedEmail.includes('.')) {
+          onOpen(decodedEmail);
+        }
+      } catch (error) {
+        console.error('Invalid feedback ID:', error);
+      }
+    }
+  }, [searchParams, onOpen]);
+  return null;
+}
+
 export default function Page() {
+  const [feedbackModal, setFeedbackModal] = useState({
+    isOpen: false,
+    email: '',
+  });
+
   useLayoutEffect(() => {
     // ScrollSmoother.create({
     //   wrapper: '#smooth-wrapper',
@@ -116,6 +129,22 @@ export default function Page() {
     //   smooth: 1,
     // });
   }, []);
+
+  // Feedback trigger via URL param is handled in Suspense-wrapped gate below
+
+  const closeFeedbackModal = () => {
+    setFeedbackModal({
+      isOpen: false,
+      email: '',
+    });
+  };
+
+  const openFeedbackModal = () => {
+    setFeedbackModal({
+      isOpen: true,
+      email: '', // Empty email for manual entry
+    });
+  };
 
   return (
     <div className="relative w-full">
@@ -125,6 +154,27 @@ export default function Page() {
         <TopBar />
       </ViewportPortal>
 
+      {/* Watch search params for feedback id inside Suspense boundary */}
+      <Suspense fallback={null}>
+        <FeedbackSearchParamGate
+          onOpen={(email) => setFeedbackModal({ isOpen: true, email })}
+        />
+      </Suspense>
+
+      {/* Feedback Modal via portal to ensure overlay is above all content */}
+      <ViewportPortal>
+        <FeedbackModal
+          isOpen={feedbackModal.isOpen}
+          onClose={closeFeedbackModal}
+          email={feedbackModal.email}
+          eventType="C2C"
+        />
+      </ViewportPortal>
+
+      {/* Feedback Button (hidden when modal open) */}
+      {!feedbackModal.isOpen && (
+        <DesktopFeedbackButton onClick={openFeedbackModal} />
+      )}
 
       <div id="smooth-wrapper" className="relative z-0">
         <div id="smooth-content">
