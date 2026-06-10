@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
 function toDomId(value: string) {
   return value.replace(/[^A-Za-z0-9_-]/g, "_");
@@ -12,44 +12,130 @@ type ReturnAnnouncementProps = {
   onToggle: () => void;
 };
 
-const SECTORS = [
-  {
-    className: "c2c-upcoming-sector c2c-upcoming-sector--date",
-    labelClassName: "c2c-upcoming-label c2c-upcoming-label--date",
-    eyebrow: "Date",
-    value: "September",
-  },
-  {
-    className: "c2c-upcoming-sector c2c-upcoming-sector--venue",
-    labelClassName: "c2c-upcoming-label c2c-upcoming-label--venue",
-    eyebrow: "Venue",
-    value: "Anna Audi",
-  },
-  {
-    className: "c2c-upcoming-sector c2c-upcoming-sector--campus",
-    labelClassName: "c2c-upcoming-label c2c-upcoming-label--campus",
-    eyebrow: "Campus",
-    value: "VIT Vellore",
-  },
-  {
-    className: "c2c-upcoming-sector c2c-upcoming-sector--state",
-    labelClassName: "c2c-upcoming-label c2c-upcoming-label--state",
-    eyebrow: "State",
-    value: "Tamil Nadu",
-  },
-  {
-    className: "c2c-upcoming-sector c2c-upcoming-sector--cutout",
-    labelClassName: "c2c-upcoming-label c2c-upcoming-label--cutout",
-    eyebrow: "Coming",
-    value: "September 2026",
-  },
-  {
-    className: "c2c-upcoming-sector c2c-upcoming-sector--return",
-    labelClassName: "c2c-upcoming-label c2c-upcoming-label--return",
-    eyebrow: "Return",
-    value: "C2C 6.0",
-  },
+// Logo C2C Logo.svg (no rotation) has 6 hexagon sectors with these colors,
+// indexed by their centre compass angle (CW from north):
+//   30°  (NE, TopCenter↔UpperRight): #86CCAC
+//   90°  (E,  UpperRight↔LowerRight): cutout — #2C2C2C
+//   150° (SE, LowerRight↔BottomCenter): #5EBF94
+//   210° (SW, BottomCenter↔LowerLeft): #ADDBC8
+//   270° (W,  LowerLeft↔UpperLeft): #48BA86
+//   330° (NW, UpperLeft↔TopCenter): #D3EBE0
+// At the end of the takeover animation the logo is rotated 90° clockwise,
+// so each logo sector maps to a screen direction 90° further around.
+type Sector = {
+  key: string;
+  centerDeg: number;
+  color: string;
+  delay: string;
+  eyebrow: string;
+  value: string;
+};
+
+const SECTORS: Sector[] = [
+  { key: "venue", centerDeg: 0, color: "rgba(72, 186, 134, 0.84)", delay: "460ms", eyebrow: "Venue", value: "Anna Audi" },
+  { key: "campus", centerDeg: 60, color: "rgba(211, 235, 224, 0.84)", delay: "510ms", eyebrow: "Campus", value: "VIT Vellore" },
+  { key: "state", centerDeg: 120, color: "rgba(134, 204, 172, 0.84)", delay: "560ms", eyebrow: "State", value: "Tamil Nadu" },
+  { key: "cutout", centerDeg: 180, color: "rgba(44, 44, 44, 0.84)", delay: "610ms", eyebrow: "Coming", value: "September 2026" },
+  { key: "date", centerDeg: 240, color: "rgba(94, 191, 148, 0.84)", delay: "660ms", eyebrow: "Date", value: "September" },
+  { key: "return", centerDeg: 300, color: "rgba(173, 219, 200, 0.84)", delay: "710ms", eyebrow: "Return", value: "C2C 6.0" },
 ];
+
+type SectorGeometry = {
+  clipPath: string;
+  labelX: number;
+  labelY: number;
+};
+
+const TWO_PI = Math.PI * 2;
+const HALF_SECTOR = Math.PI / 6; // 30°
+
+function rayToEdge(
+  angleRad: number,
+  cx: number,
+  cy: number,
+  width: number,
+  height: number,
+): [number, number] {
+  const sx = Math.sin(angleRad);
+  const sy = -Math.cos(angleRad);
+  let t = Infinity;
+  const eps = 1e-9;
+  if (sx > eps) t = Math.min(t, (width - cx) / sx);
+  if (sx < -eps) t = Math.min(t, -cx / sx);
+  if (sy > eps) t = Math.min(t, (height - cy) / sy);
+  if (sy < -eps) t = Math.min(t, -cy / sy);
+  return [cx + t * sx, cy + t * sy];
+}
+
+function angleFromCenter(px: number, py: number, cx: number, cy: number): number {
+  let a = Math.atan2(px - cx, cy - py);
+  if (a < 0) a += TWO_PI;
+  return a;
+}
+
+function computeGeometry(width: number, height: number): SectorGeometry[] {
+  const cx = width / 2;
+  const cy = height / 2;
+  const corners = [
+    { x: width, y: 0 },
+    { x: width, y: height },
+    { x: 0, y: height },
+    { x: 0, y: 0 },
+  ].map((c) => ({ ...c, angle: angleFromCenter(c.x, c.y, cx, cy) }));
+
+  // Reserve padding so labels do not run off-screen or collide with the
+  // bottom button. Cutout (south wedge) gets extra bottom reserve.
+  const estimatedLabelHalf = Math.min(width * 0.16, Math.max(54, Math.min(width, height) * 0.14));
+  const padX = Math.max(estimatedLabelHalf + 12, width * 0.055);
+  const padY = Math.max(56, height * 0.05);
+  const buttonReserve = 120;
+
+  return SECTORS.map((sector) => {
+    const centerAngle = (sector.centerDeg * Math.PI) / 180;
+    const startAngle = centerAngle - HALF_SECTOR;
+    const endAngle = centerAngle + HALF_SECTOR;
+    const startPt = rayToEdge(startAngle, cx, cy, width, height);
+    const endPt = rayToEdge(endAngle, cx, cy, width, height);
+
+    const s = ((startAngle % TWO_PI) + TWO_PI) % TWO_PI;
+    let e = ((endAngle % TWO_PI) + TWO_PI) % TWO_PI;
+    if (e <= s) e += TWO_PI;
+
+    const cornersInRange = corners
+      .map((corner) => {
+        let ca = corner.angle;
+        if (ca < s) ca += TWO_PI;
+        return { x: corner.x, y: corner.y, sortAngle: ca };
+      })
+      .filter((c) => c.sortAngle > s + 1e-6 && c.sortAngle < e - 1e-6)
+      .sort((a, b) => a.sortAngle - b.sortAngle);
+
+    const points: [number, number][] = [[cx, cy], startPt];
+    cornersInRange.forEach((c) => points.push([c.x, c.y]));
+    points.push(endPt);
+
+    const clipPath = `polygon(${points
+      .map(([x, y]) => `${x.toFixed(2)}px ${y.toFixed(2)}px`)
+      .join(", ")})`;
+
+    // Position the label along the wedge's angular bisector at a fraction of
+    // the bisector ray's length. Doing this (rather than using the polygon
+    // centroid) keeps the label on the wedge's axis of symmetry, so it does
+    // not lean toward a corner and spill into the neighbouring wedge on
+    // narrow viewports (e.g. Galaxy Z Fold 5 outer screen).
+    const bisectorExit = rayToEdge(centerAngle, cx, cy, width, height);
+    const minDim = Math.min(width, height);
+    const fraction = minDim < 480 ? 0.62 : 0.7;
+    let labelX = cx + fraction * (bisectorExit[0] - cx);
+    let labelY = cy + fraction * (bisectorExit[1] - cy);
+
+    labelX = Math.max(padX, Math.min(width - padX, labelX));
+    const bottomReserve = sector.key === "cutout" ? Math.max(padY, buttonReserve) : padY;
+    labelY = Math.max(padY, Math.min(height - bottomReserve, labelY));
+
+    return { clipPath, labelX, labelY };
+  });
+}
 
 function GlassDistortion({ id }: { id: string }) {
   return (
@@ -87,9 +173,19 @@ function GlassDistortion({ id }: { id: string }) {
 export default function ReturnAnnouncement({ active, onToggle }: ReturnAnnouncementProps) {
   const [hovered, setHovered] = useState(false);
   const [suppressHoverGlass, setSuppressHoverGlass] = useState(false);
+  const [geometry, setGeometry] = useState<SectorGeometry[]>([]);
   const filterId = `c2c-upcoming-glass-${toDomId(useId())}`;
   const showingGlass = hovered && !active && !suppressHoverGlass;
   const showingOverlay = showingGlass || active;
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const update = () =>
+      setGeometry(computeGeometry(window.innerWidth, window.innerHeight));
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
 
   const handleHoverStart = () => {
     if (!active && !suppressHoverGlass) {
@@ -115,9 +211,7 @@ export default function ReturnAnnouncement({ active, onToggle }: ReturnAnnouncem
       <div
         className={`c2c-upcoming-overlay ${showingOverlay ? "is-visible" : ""} ${
           showingGlass ? "is-glass" : ""
-        } ${
-          active ? "is-active" : ""
-        }`}
+        } ${active ? "is-active" : ""}`}
         aria-hidden={!active}
         style={{
           WebkitBackdropFilter: showingGlass
@@ -133,9 +227,21 @@ export default function ReturnAnnouncement({ active, onToggle }: ReturnAnnouncem
 
         <div className="c2c-upcoming-stage" aria-hidden={!active}>
           <div className="c2c-upcoming-sector-layer">
-            {SECTORS.map((item) => (
-              <div key={item.className} className={item.className} />
-            ))}
+            {SECTORS.map((sector, i) => {
+              const geo = geometry[i];
+              return (
+                <div
+                  key={sector.key}
+                  className={`c2c-upcoming-sector c2c-upcoming-sector--${sector.key}`}
+                  style={{
+                    background: sector.color,
+                    clipPath: geo?.clipPath,
+                    WebkitClipPath: geo?.clipPath,
+                    transitionDelay: `${sector.delay}, ${sector.delay}`,
+                  }}
+                />
+              );
+            })}
           </div>
           <div className="c2c-upcoming-logo-wrap">
             <Image
@@ -148,12 +254,22 @@ export default function ReturnAnnouncement({ active, onToggle }: ReturnAnnouncem
             />
           </div>
           <div className="c2c-upcoming-label-layer">
-            {SECTORS.map((item) => (
-              <div key={item.labelClassName} className={item.labelClassName}>
-                <span>{item.eyebrow}</span>
-                <strong>{item.value}</strong>
-              </div>
-            ))}
+            {SECTORS.map((sector, i) => {
+              const geo = geometry[i];
+              return (
+                <div
+                  key={sector.key}
+                  className={`c2c-upcoming-label c2c-upcoming-label--${sector.key}`}
+                  style={{
+                    left: geo ? `${geo.labelX}px` : "50%",
+                    top: geo ? `${geo.labelY}px` : "50%",
+                  }}
+                >
+                  <span>{sector.eyebrow}</span>
+                  <strong>{sector.value}</strong>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

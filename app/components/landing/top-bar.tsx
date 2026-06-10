@@ -7,7 +7,11 @@ import { useRouter } from "next/navigation";
 import { InteractiveHoverButton } from "@/app/components/landing/ui/cta-button";
 import { REGISTRATIONS_OPEN } from "@/lib/env";
 
-export default function TopBar() {
+type TopBarProps = {
+  onUpcomingEdition?: () => void;
+};
+
+export default function TopBar({ onUpcomingEdition }: TopBarProps = {}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
 
@@ -22,6 +26,15 @@ export default function TopBar() {
   }, [menuOpen]);
 
   const handleNavClick = (href: string) => {
+    if (href === "#__upcoming") {
+      if (onUpcomingEdition) {
+        onUpcomingEdition();
+      } else if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("c2c:open-upcoming"));
+      }
+      setMenuOpen(false);
+      return;
+    }
     if (href.startsWith("#")) {
       const element = document.querySelector(href);
       if (element) {
@@ -46,16 +59,23 @@ export default function TopBar() {
     { href: "#speakers", label: "Speakers", hasDropdown: false },
     { href: "#sponsors", label: "Sponsors", hasDropdown: false },
     { href: "#faqs", label: "FAQs", hasDropdown: false },
+    { href: "#__upcoming", label: "See upcoming edition", hasDropdown: false },
   ];
 
   return (
     <>
-      <div className="w-full bg-transparent border-b border-white backdrop-blur-sm">
+      <div
+        className="c2c-topbar w-full border-b border-white/60"
+        style={{
+          backgroundColor: "rgba(10, 12, 14, 0.62)",
+          WebkitBackdropFilter: "blur(18px) saturate(160%)",
+          backdropFilter: "blur(18px) saturate(160%)",
+        }}
+      >
         <div className="w-full flex items-center justify-between px-0 sm:px-0 lg:px-0 py-2 md:py-0 md:h-14">
           <div className="flex-shrink-0 border-r border-white pr-4 md:pr-8 py-1 flex items-center">
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              onPointerDown={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               className="cursor-pointer"
               aria-label="Scroll to top"
             >
@@ -79,7 +99,6 @@ export default function TopBar() {
                   {link.href.startsWith("#") ? (
                     <button
                       onClick={() => handleNavClick(link.href)}
-                      onPointerDown={() => handleNavClick(link.href)}
                       className="group inline-flex items-center justify-center h-full cursor-pointer"
                     >
                       <span
@@ -138,7 +157,6 @@ export default function TopBar() {
               <InteractiveHoverButton
                 variant="simple"
                 onClick={() => router.push('/portal')}
-                onPointerDown={() => router.push('/portal')}
                 className="w-auto text-[11px] px-3 py-1 min-h-[28px] rounded-full font-semibold bg-black/50 hover:bg-black/60 text-white border border-white/30 backdrop-blur-sm transition-colors cursor-pointer"
               >
                 Register Now
@@ -148,7 +166,6 @@ export default function TopBar() {
               aria-label="Toggle menu"
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((s) => !s)}
-              onPointerDown={() => setMenuOpen((s) => !s)}
               className="p-2 rounded-md text-white hover:bg-white/10 focus:outline-none focus:ring-white cursor-pointer"
             >
               {menuOpen ? (
@@ -205,7 +222,6 @@ export default function TopBar() {
                     {link.href.startsWith("#") ? (
                       <button
                         onClick={() => handleNavClick(link.href)}
-                        onPointerDown={() => handleNavClick(link.href)}
                         className="block w-full px-3 py-2 rounded text-white hover:bg-white/10 text-center cursor-pointer"
                         style={{ fontFamily: "Trap, Arial, sans-serif" }}
                       >
@@ -215,7 +231,6 @@ export default function TopBar() {
                       <Link
                         href={link.href}
                         onClick={() => setMenuOpen(false)}
-                        onPointerDown={() => setMenuOpen(false)}
                         className="block w-full px-3 py-2 rounded text-white hover:bg-white/10 text-center cursor-pointer"
                         style={{ fontFamily: "Trap, Arial, sans-serif" }}
                       >

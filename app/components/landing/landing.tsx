@@ -6,7 +6,11 @@ import { InteractiveHoverButton } from "@/app/components/landing/ui/cta-button";
 import { REGISTRATIONS_OPEN } from "@/lib/env";
 import { useRouter } from "next/navigation";
 
-const Landing = () => {
+type LandingProps = {
+  onPreRegister?: () => void;
+};
+
+const Landing = ({ onPreRegister }: LandingProps = {}) => {
   const router = useRouter();
   return (
     <div
@@ -107,6 +111,24 @@ const Landing = () => {
             priority
           />
         </div>
+
+        {/* Pre-register CTA — placed mid-screen, above the tagline */}
+        {onPreRegister && (
+          <div
+            className="absolute left-1/2 -translate-x-1/2 z-20 c2c-prereg-cta"
+            style={{ bottom: "32%" }}
+          >
+            <button
+              type="button"
+              onClick={onPreRegister}
+              className="c2c-prereg-trigger group inline-flex items-center gap-2 px-6 py-3 rounded-full text-white text-sm sm:text-base"
+            >
+              <span aria-hidden className="c2c-prereg-trigger__dot" />
+              <span className="font-semibold tracking-wide">Pre-register for C2C 7.0</span>
+              <span aria-hidden className="c2c-prereg-trigger__arrow">→</span>
+            </button>
+          </div>
+        )}
 
         {/* Main tagline */}
         <div

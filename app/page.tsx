@@ -22,6 +22,7 @@ import HeadingText from "./components/landing/HeadingText";
 import Tracks from "./components/landing/tracks";
 import { useSearchParams } from "next/navigation";
 import ReturnAnnouncement from "./components/landing/return-announcement";
+import PreRegistration from "./components/landing/pre-registration";
 
 const DesktopFeedbackButton = ({ onClick, disabled }: { onClick: () => void; disabled?: boolean }) => {
   if (disabled) return null;
@@ -120,6 +121,7 @@ function FeedbackSearchParamGate({ onOpen, disabled }: { onOpen: (email: string)
 
 export default function Page() {
   const [upcomingOpen, setUpcomingOpen] = useState(false);
+  const [preRegisterOpen, setPreRegisterOpen] = useState(false);
   const [feedbackModal, setFeedbackModal] = useState({
     isOpen: false,
     email: '',
@@ -166,22 +168,70 @@ export default function Page() {
     });
   };
 
-  const toggleUpcoming = () => {
-    if (!upcomingOpen && typeof window !== "undefined") {
+  const toggleUpcoming = useCallback(() => {
+    if (typeof window !== "undefined") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
     setUpcomingOpen((current) => !current);
-  };
+  }, []);
+
+  const openPreRegister = useCallback(() => {
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    setPreRegisterOpen(true);
+  }, []);
+
+  const closePreRegister = useCallback(() => setPreRegisterOpen(false), []);
+
+  // Lock body scroll while the pre-register flow is open
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const previousBody = document.body.style.overflow;
+    const previousHtml = document.documentElement.style.overflow;
+    document.body.style.overflow = preRegisterOpen ? "hidden" : previousBody || "";
+    document.documentElement.style.overflow = preRegisterOpen ? "hidden" : previousHtml || "";
+    return () => {
+      document.body.style.overflow = previousBody || "";
+      document.documentElement.style.overflow = previousHtml || "";
+    };
+  }, [preRegisterOpen]);
+
+  // Surface the upcoming toggle to the (portal-rendered) TopBar nav item
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handler = () => toggleUpcoming();
+    window.addEventListener("c2c:open-upcoming", handler);
+    return () => window.removeEventListener("c2c:open-upcoming", handler);
+  }, [toggleUpcoming]);
+
+  const shellClass = [
+    "relative w-full c2c-page-shell",
+    upcomingOpen ? "is-upcoming-open" : "",
+    preRegisterOpen ? "is-prereg-open" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
-    <div className={`relative w-full c2c-page-shell ${upcomingOpen ? "is-upcoming-open" : ""}`}>
+    <div className={shellClass}>
       <div className="fixed inset-0 -z-10 bg-gradient-to-b from-[#0a0a0a] via-[#161616] to-[#0a0a0a]" />
 
-      <ViewportPortal className={`c2c-upcoming-header ${upcomingOpen ? "is-upcoming-open" : ""}`}>
-        <TopBar />
+      <ViewportPortal
+        className={`c2c-upcoming-header ${upcomingOpen ? "is-upcoming-open" : ""} ${
+          preRegisterOpen ? "is-prereg-open" : ""
+        }`}
+      >
+        <TopBar onUpcomingEdition={toggleUpcoming} />
       </ViewportPortal>
-      <ViewportPortal id="c2c-upcoming-portal">
+      <ViewportPortal
+        id="c2c-upcoming-portal"
+        className={`c2c-upcoming-host ${preRegisterOpen ? "is-prereg-open" : ""}`}
+      >
         <ReturnAnnouncement active={upcomingOpen} onToggle={toggleUpcoming} />
+      </ViewportPortal>
+      <ViewportPortal id="c2c-prereg-portal">
+        <PreRegistration active={preRegisterOpen} onClose={closePreRegister} />
       </ViewportPortal>
 
       {/* Watch search params for feedback id inside Suspense boundary */}
@@ -213,7 +263,7 @@ export default function Page() {
       <div id="smooth-wrapper" className="relative z-0">
         <div id="smooth-content">
           <div className="relative">
-            <Landing />
+            <Landing onPreRegister={openPreRegister} />
           </div>
 
           <div className="min-h-screen flex flex-col">
