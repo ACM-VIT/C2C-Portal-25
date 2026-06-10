@@ -169,16 +169,10 @@ export default function Page() {
   };
 
   const toggleUpcoming = useCallback(() => {
-    if (typeof window !== "undefined") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
     setUpcomingOpen((current) => !current);
   }, []);
 
   const openPreRegister = useCallback(() => {
-    if (typeof window !== "undefined") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
     setPreRegisterOpen(true);
   }, []);
 

@@ -59,14 +59,17 @@ export default function TopBar({ onUpcomingEdition }: TopBarProps = {}) {
     { href: "#speakers", label: "Speakers", hasDropdown: false },
     { href: "#sponsors", label: "Sponsors", hasDropdown: false },
     { href: "#faqs", label: "FAQs", hasDropdown: false },
-    { href: "#__upcoming", label: "See upcoming edition", hasDropdown: false },
+    { href: "#__upcoming", label: "See upcoming Edition", hasDropdown: false },
   ];
 
   return (
     <>
       <div className="c2c-topbar w-full border-b border-white/60">
-        <div className="w-full flex items-center justify-between px-0 sm:px-0 lg:px-0 py-2 md:py-0 md:h-14">
-          <div className="flex-shrink-0 border-r border-white pr-4 md:pr-8 py-1 flex items-center">
+        <span aria-hidden className="c2c-topbar__effect" />
+        <span aria-hidden className="c2c-topbar__tint" />
+        <span aria-hidden className="c2c-topbar__shine" />
+        <div className="w-full flex items-center justify-between px-0 py-2 min-[1120px]:py-0 min-[1120px]:h-14">
+          <div className="flex-shrink-0 border-r border-white pr-4 min-[1120px]:pr-8 py-1 flex items-center">
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               className="cursor-pointer"
@@ -85,8 +88,8 @@ export default function TopBar({ onUpcomingEdition }: TopBarProps = {}) {
             </button>
           </div>
 
-          <nav className="hidden md:flex flex-1 justify-center items-center px-4 md:h-full">
-            <ul className="flex gap-4 items-center h-full">
+          <nav className="hidden min-[1120px]:flex flex-1 justify-center items-center px-2 min-[1120px]:h-full">
+            <ul className="flex gap-1 xl:gap-2 items-center h-full">
               {navLinks.map((link) => (
                 <li key={link.href} className="min-w-0 flex items-center h-full">
                   {link.href.startsWith("#") ? (
@@ -95,10 +98,10 @@ export default function TopBar({ onUpcomingEdition }: TopBarProps = {}) {
                       className="group inline-flex items-center justify-center h-full cursor-pointer"
                     >
                       <span
-                        className="flex items-center justify-center space-x-2 px-3 py-1 rounded-md transition-colors min-w-0"
+                        className="flex items-center justify-center space-x-2 px-2 xl:px-3 py-1 rounded-md transition-colors min-w-0"
                         style={{ fontFamily: "Trap, Arial, sans-serif" }}
                       >
-                        <span className="text-white group-hover:text-gray-300 text-center leading-tight break-words">
+                        <span className="text-white group-hover:text-gray-300 text-center leading-tight text-[13px] xl:text-sm whitespace-nowrap">
                           {link.label}
                         </span>
                         {link.hasDropdown && (
@@ -120,10 +123,10 @@ export default function TopBar({ onUpcomingEdition }: TopBarProps = {}) {
                       className="group inline-flex items-center justify-center h-full cursor-pointer"
                     >
                       <span
-                        className="flex items-center justify-center space-x-2 px-3 py-1 rounded-md transition-colors min-w-0"
+                        className="flex items-center justify-center space-x-2 px-2 xl:px-3 py-1 rounded-md transition-colors min-w-0"
                         style={{ fontFamily: "Trap, Arial, sans-serif" }}
                       >
-                        <span className="text-white group-hover:text-gray-300 text-center leading-tight break-words">
+                        <span className="text-white group-hover:text-gray-300 text-center leading-tight text-[13px] xl:text-sm whitespace-nowrap">
                           {link.label}
                         </span>
                         {link.hasDropdown && (
@@ -145,7 +148,7 @@ export default function TopBar({ onUpcomingEdition }: TopBarProps = {}) {
             </ul>
           </nav>
 
-          <div className="md:hidden flex items-center gap-2">
+          <div className="min-[1120px]:hidden flex items-center gap-2">
             {REGISTRATIONS_OPEN && (
               <InteractiveHoverButton
                 variant="simple"
@@ -186,7 +189,7 @@ export default function TopBar({ onUpcomingEdition }: TopBarProps = {}) {
             </button>
           </div>
 
-          <div className="hidden md:flex flex-shrink-0 border-l border-white pl-4 md:pl-8 py-1 items-center mr-4">
+          <div className="hidden min-[1120px]:flex flex-shrink-0 border-l border-white pl-4 min-[1120px]:pl-8 py-1 items-center mr-4">
             <a
               href="https://acmvit.in"
               target="_blank"
@@ -207,7 +210,7 @@ export default function TopBar({ onUpcomingEdition }: TopBarProps = {}) {
         </div>
 
         {menuOpen && (
-          <div className="md:hidden absolute inset-x-0 top-full bg-black/95 border-t border-white z-50">
+          <div className="min-[1120px]:hidden absolute inset-x-0 top-full bg-black/95 border-t border-white z-50">
             <div className="px-4 py-4">
               <ul className="flex flex-col gap-3">
                 {navLinks.map((link) => (

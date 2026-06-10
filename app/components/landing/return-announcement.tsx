@@ -297,7 +297,7 @@ export default function ReturnAnnouncement({ active, onToggle }: ReturnAnnouncem
         <span className="c2c-upcoming-button__tint" />
         <span className="c2c-upcoming-button__shine" />
         <span className="c2c-upcoming-button__content">
-          {active ? "Back to site" : "See upcoming"}
+          {active ? "Back to site" : "See upcoming Edition"}
         </span>
       </button>
     </div>

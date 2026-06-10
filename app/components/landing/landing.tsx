@@ -51,8 +51,8 @@ const Landing = ({ onPreRegister }: LandingProps = {}) => {
       <div className="relative h-full flex flex-col items-center justify-center z-10">
         {/* Main Heading with stroke - positioned above logo */}
         <div
-          className="absolute md:top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 px-4 w-full max-w-screen-xl"
-          style={{ zIndex: 10, top: "calc(28% + env(safe-area-inset-top, 0px))" }}
+          className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 px-4 w-full max-w-screen-xl top-[22%] md:top-[20%]"
+          style={{ zIndex: 10 }}
         >
           <h1 className="text-center text-hollow text-2xl xs:text-3xl sm:text-5xl md:text-6xl lg:text-7xl break-words hyphens-auto mb-1 xs:mb-2 sm:mb-4">
             Turning what if
@@ -112,57 +112,23 @@ const Landing = ({ onPreRegister }: LandingProps = {}) => {
           />
         </div>
 
-        {/* Pre-register CTA — placed mid-screen, above the tagline */}
+        {/* Pre-register CTA — same liquid-glass build as the See upcoming
+         * button. Desktop sits mid-hero above the tagline, mobile sits just
+         * below the "Turning what if" heading. */}
         {onPreRegister && (
-          <div
-            className="absolute left-1/2 -translate-x-1/2 z-20 c2c-prereg-cta"
-            style={{ bottom: "32%" }}
-          >
-            <svg
-              className="c2c-prereg-liquid-filter"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-              focusable="false"
-              width="0"
-              height="0"
-            >
-              <defs>
-                <filter id="c2c-prereg-liquid-glass" x="-20%" y="-80%" width="140%" height="260%">
-                  <feTurbulence
-                    type="fractalNoise"
-                    baseFrequency="0.012 0.028"
-                    numOctaves="2"
-                    seed="7"
-                    result="noise"
-                  />
-                  <feGaussianBlur in="noise" stdDeviation="9" result="softNoise" />
-                  <feComponentTransfer in="softNoise" result="dispMap">
-                    <feFuncA type="discrete" tableValues="0 0.45 0.85 1" />
-                  </feComponentTransfer>
-                  <feDisplacementMap
-                    in="SourceGraphic"
-                    in2="dispMap"
-                    scale="26"
-                    xChannelSelector="R"
-                    yChannelSelector="G"
-                    result="displaced"
-                  />
-                  <feGaussianBlur in="displaced" stdDeviation="1.2" />
-                </filter>
-              </defs>
-            </svg>
+          <div className="absolute left-1/2 -translate-x-1/2 z-20 c2c-prereg-cta c2c-prereg-cta--hero">
             <button
               type="button"
               onClick={onPreRegister}
-              className="c2c-prereg-trigger group inline-flex items-center gap-2 px-6 py-3 rounded-full text-white text-sm sm:text-base"
+              className="c2c-upcoming-button"
+              aria-label="Pre-register for C2C 7.0"
             >
-              <span aria-hidden className="c2c-prereg-trigger__effect" />
-              <span aria-hidden className="c2c-prereg-trigger__tint" />
-              <span aria-hidden className="c2c-prereg-trigger__shine" />
-              <span className="c2c-prereg-trigger__content font-semibold tracking-wide">
-                Pre-register for C2C 7.0
+              <span aria-hidden className="c2c-upcoming-button__effect" />
+              <span aria-hidden className="c2c-upcoming-button__tint" />
+              <span aria-hidden className="c2c-upcoming-button__shine" />
+              <span className="c2c-upcoming-button__content">
+                Pre-register for C2C 7.0 →
               </span>
-              <span aria-hidden className="c2c-prereg-trigger__arrow">→</span>
             </button>
           </div>
         )}

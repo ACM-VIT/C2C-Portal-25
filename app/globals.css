@@ -365,50 +365,85 @@ h4 {
   will-change: transform, opacity;
 }
 
+/* Liquid-glass treatment (chakornk-style).
+ *
+ * Three-layer build, shared across the navbar and the floating CTAs:
+ *   __effect — backdrop-filter with the SVG displacement filter (refraction)
+ *              + blur + saturate. This is what reads as a real glass slab.
+ *   __tint   — translucent white wash so the glass is visible even when
+ *              there is nothing distinctive behind it.
+ *   __shine  — inset highlights along the rim that catch the eye like a
+ *              polished edge.
+ *
+ * The container needs `position: relative; isolation: isolate;
+ * overflow: hidden;` so the displacement filter clips inside the rounded
+ * border. Content sits at z-index 3 above the three layers.
+ */
+
 .c2c-topbar {
   position: relative;
   isolation: isolate;
   overflow: hidden;
   pointer-events: auto;
-  background: rgba(7, 14, 15, 0.34) !important;
-  -webkit-backdrop-filter: blur(0.1px);
-  backdrop-filter: blur(0.1px);
+  background: transparent;
+  /* Subtle outer drop so the bar reads as a floating slab on top of the
+   * hero. Inset hairlines come from __shine. */
   box-shadow:
-    inset 0 -1px 0 rgba(255, 255, 255, 0.24),
-    0 12px 34px rgba(0, 0, 0, 0.28);
+    0 10px 28px rgba(0, 0, 0, 0.28),
+    0 2px 6px rgba(0, 0, 0, 0.18);
 }
 
-.c2c-topbar::before {
-  content: "";
+.c2c-topbar__effect,
+.c2c-topbar__tint,
+.c2c-topbar__shine {
   position: absolute;
   inset: 0;
+  pointer-events: none;
+}
+
+/* Blur lifted verbatim from anitaparmar26's codepen (BaLBxeG) — a plain
+ * 30px backdrop-filter, no saturate, no SVG displacement. */
+.c2c-topbar__effect {
   z-index: 0;
-  background:
-    linear-gradient(180deg, rgba(16, 43, 43, 0.72), rgba(5, 10, 11, 0.54)),
-    radial-gradient(circle at 18% 8%, rgba(72, 186, 134, 0.36), transparent 32%),
-    radial-gradient(circle at 78% 0%, rgba(211, 235, 224, 0.18), transparent 34%),
-    rgba(8, 12, 13, 0.58);
-  -webkit-backdrop-filter: blur(28px) saturate(190%) contrast(106%);
-  backdrop-filter: blur(28px) saturate(190%) contrast(106%);
-  pointer-events: none;
+  -webkit-backdrop-filter: blur(30px);
+  backdrop-filter: blur(30px);
 }
 
-.c2c-topbar::after {
-  content: "";
-  position: absolute;
-  inset: 0;
+/* Tint is what makes the slab visible against a uniform dark background.
+ * Stack: a clear top-down glass wash, a soft warm-green sheen from the
+ * left, and a faint white highlight at the upper edge. */
+.c2c-topbar__tint {
   z-index: 1;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.32);
+  background:
+    radial-gradient(140% 120% at 12% -40%, rgba(255, 255, 255, 0.32), transparent 56%),
+    radial-gradient(160% 130% at 92% -50%, rgba(173, 219, 200, 0.22), transparent 60%),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.16) 0%,
+      rgba(255, 255, 255, 0.08) 45%,
+      rgba(255, 255, 255, 0.05) 60%,
+      rgba(0, 0, 0, 0.22) 100%
+    ),
+    rgba(255, 255, 255, 0.1);
+}
+
+/* Edge rim + corner sparkles. Captures the bright top edge, soft bottom
+ * shadow, and an inner stroke that looks like a polished bezel. */
+.c2c-topbar__shine {
+  z-index: 2;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.14),
-    inset 0 -10px 22px rgba(0, 0, 0, 0.2);
-  pointer-events: none;
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.18),
+    inset 2px 2px 1px rgba(255, 255, 255, 0.35),
+    inset -2px -2px 1px rgba(255, 255, 255, 0.14),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 .c2c-topbar > div {
   position: relative;
-  z-index: 2;
+  z-index: 3;
 }
+
 
 .c2c-upcoming-header.is-upcoming-open {
   transform: translateY(calc(-100% - 10px));
@@ -726,8 +761,9 @@ h4 {
 
 .c2c-upcoming-button__effect {
   z-index: 0;
-  -webkit-backdrop-filter: blur(12px) saturate(170%);
-  backdrop-filter: blur(12px) saturate(170%);
+  -webkit-backdrop-filter: blur(10px) saturate(170%);
+  backdrop-filter: blur(10px) saturate(170%);
+  filter: url(#c2c-liquid-glass);
 }
 
 .c2c-upcoming-button__tint {
@@ -747,10 +783,10 @@ h4 {
 .c2c-upcoming-button__content {
   position: relative;
   z-index: 3;
-  font-family: "Trap-Bold", "Trap", Arial, sans-serif;
-  font-size: 0.88rem;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
+  font-family: "DM Sans", "Trap", Arial, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0;
   white-space: nowrap;
   text-shadow: 0 1px 18px rgba(0, 0, 0, 0.55);
 }
@@ -847,89 +883,35 @@ h4 {
   pointer-events: auto;
 }
 
-.c2c-prereg-liquid-filter {
-  position: absolute;
-  width: 0;
-  height: 0;
-  pointer-events: none;
+/* Hero-mounted CTA: positioned just below the "Turning what if" heading.
+ * Top% values are calibrated so the button does not overlap the navbar
+ * (above) or the floating C2C logo (below) at any breakpoint. */
+.c2c-prereg-cta--hero {
+  top: 32%;
+  bottom: auto;
 }
 
-.c2c-prereg-trigger {
+@media (min-width: 768px) {
+  .c2c-prereg-cta--hero {
+    top: 33%;
+  }
+}
+
+/* The pre-register CTA reuses the See upcoming button's visual class
+ * (c2c-upcoming-button) for an identical glass treatment, but it needs to
+ * live INSIDE the hero wrapper rather than floating fixed at the bottom of
+ * the viewport. These overrides keep the look and drop the fixed-position
+ * bottom mounting + translateX(-50%) baseline transform. */
+.c2c-prereg-cta .c2c-upcoming-button {
   position: relative;
-  overflow: hidden;
-  isolation: isolate;
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  background: rgba(220, 255, 240, 0.11);
-  box-shadow:
-    0 18px 44px rgba(0, 0, 0, 0.42),
-    inset -2px -4px 8px rgba(0, 0, 0, 0.08),
-    inset 2px 4px 9px rgba(255, 255, 255, 0.16),
-    inset 0 0 5px rgba(255, 255, 255, 0.28);
-  font-family: "Trap-Bold", "Trap", Arial, sans-serif;
-  letter-spacing: 0.02em;
-  cursor: pointer;
-  transition:
-    transform 280ms cubic-bezier(0.18, 1, 0.22, 1),
-    box-shadow 280ms ease,
-    border-color 280ms ease;
+  left: auto;
+  bottom: auto;
+  transform: none;
 }
 
-.c2c-prereg-trigger:hover,
-.c2c-prereg-trigger:focus-visible {
-  outline: none;
-  transform: translateY(-2px) scale(1.02);
-  border-color: rgba(255, 255, 255, 0.46);
-  box-shadow:
-    0 22px 52px rgba(0, 0, 0, 0.5),
-    inset -2px -4px 8px rgba(0, 0, 0, 0.1),
-    inset 2px 4px 9px rgba(255, 255, 255, 0.24),
-    inset 0 0 7px rgba(255, 255, 255, 0.34);
-}
-
-.c2c-prereg-trigger__effect,
-.c2c-prereg-trigger__tint,
-.c2c-prereg-trigger__shine {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-}
-
-.c2c-prereg-trigger__effect {
-  z-index: 0;
-  -webkit-backdrop-filter: url(#c2c-prereg-liquid-glass) blur(16px) saturate(175%);
-  backdrop-filter: url(#c2c-prereg-liquid-glass) blur(16px) saturate(175%);
-}
-
-.c2c-prereg-trigger__tint {
-  z-index: 0;
-  background:
-    radial-gradient(circle at 22% 8%, rgba(255, 255, 255, 0.36), transparent 42%),
-    radial-gradient(circle at 80% 85%, rgba(72, 186, 134, 0.2), transparent 38%),
-    rgba(255, 255, 255, 0.06);
-}
-
-.c2c-prereg-trigger__shine {
-  z-index: 1;
-  box-shadow:
-    inset 1px 1px 1px rgba(255, 255, 255, 0.5),
-    inset -1px -1px 1px rgba(255, 255, 255, 0.18);
-}
-
-.c2c-prereg-trigger__content,
-.c2c-prereg-trigger__arrow {
-  position: relative;
-  z-index: 3;
-}
-
-.c2c-prereg-trigger__arrow {
-  font-family: "Pilat Extended", "Trap-Bold", Arial, sans-serif;
-  transform: translateX(0);
-  transition: transform 240ms ease;
-}
-
-.c2c-prereg-trigger:hover .c2c-prereg-trigger__arrow {
-  transform: translateX(4px);
+.c2c-prereg-cta .c2c-upcoming-button:hover,
+.c2c-prereg-cta .c2c-upcoming-button:focus-visible {
+  transform: translateY(-4px);
 }
 
 .c2c-page-shell.is-prereg-open .c2c-prereg-cta {
@@ -975,8 +957,8 @@ h4 {
 }
 
 .c2c-prereg-strip--tl {
-  top: 2%;
-  left: 3%;
+  top: 30%;
+  left: 0%;
   transform: translate(-82%, -84%) rotate(-23deg) scaleX(0);
 }
 
@@ -986,8 +968,8 @@ h4 {
 }
 
 .c2c-prereg-strip--br {
-  right: 4%;
-  bottom: 6%;
+  right: 10%;
+  bottom: 20%;
   transform: translate(76%, 86%) rotate(-34deg) scaleX(0);
 }
 
@@ -1075,8 +1057,7 @@ h4 {
   top: 50%;
   transform: translate(-50%, -50%) scale(0.96);
   width: min(520px, calc(100vw - 32px));
-  max-height: calc(100svh - 150px);
-  overflow: auto;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -1091,14 +1072,68 @@ h4 {
   -webkit-backdrop-filter: blur(18px) saturate(160%);
   color: white;
   opacity: 0;
+  isolation: isolate;
   transition:
     opacity 360ms ease 260ms,
     transform 460ms cubic-bezier(0.18, 1, 0.22, 1) 260ms;
 }
 
+/* Moving green aura behind the form. Two pseudo-elements rotate in opposite
+ * directions, blurred into a soft halo that brushes around the card edges.
+ * Sized to the form box (no negative inset) so the colour stays contained
+ * within the card's rounded rectangle via `overflow: hidden` on the form. */
+.c2c-prereg-form::before,
+.c2c-prereg-form::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: 0;
+  pointer-events: none;
+  filter: blur(28px);
+  opacity: 0.45;
+}
+
+.c2c-prereg-form::before {
+  background: conic-gradient(
+    from 0deg,
+    rgba(72, 186, 134, 0) 0%,
+    rgba(72, 186, 134, 0.7) 18%,
+    rgba(173, 219, 200, 0.55) 32%,
+    rgba(72, 186, 134, 0) 48%,
+    rgba(94, 191, 148, 0.6) 68%,
+    rgba(72, 186, 134, 0) 100%
+  );
+  animation: c2c-prereg-aura-spin 9s linear infinite;
+}
+
+.c2c-prereg-form::after {
+  background: conic-gradient(
+    from 120deg,
+    rgba(134, 204, 172, 0) 0%,
+    rgba(94, 191, 148, 0.55) 22%,
+    rgba(72, 186, 134, 0) 44%,
+    rgba(173, 219, 200, 0.5) 64%,
+    rgba(72, 186, 134, 0) 100%
+  );
+  animation: c2c-prereg-aura-spin 13s linear infinite reverse;
+  opacity: 0.4;
+}
+
+@keyframes c2c-prereg-aura-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .c2c-prereg.is-active .c2c-prereg-form {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
+}
+
+.c2c-prereg-form > * {
+  position: relative;
+  z-index: 1;
 }
 
 .c2c-prereg-form__head {
@@ -1109,26 +1144,45 @@ h4 {
 
 .c2c-prereg-form__eyebrow {
   margin: 0;
-  font-family: "Trap", "DM Sans", Arial, sans-serif;
-  font-size: 0.78rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: rgba(72, 186, 134, 0.95);
+  font-family: "DM Sans", "Trap", Arial, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: rgba(134, 204, 172, 0.95);
 }
 
 .c2c-prereg-form__title {
   margin: 0;
-  font-family: "Pilat Extended", "Trap-Bold", Arial, sans-serif;
-  font-size: clamp(1.4rem, 3vmin, 1.85rem);
-  line-height: 1.1;
+  font-family: "DM Sans", "Trap", Arial, sans-serif;
+  font-size: clamp(1.5rem, 3.2vmin, 2rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
   color: rgba(255, 255, 255, 0.98);
 }
 
 .c2c-prereg-form__sub {
   margin: 0;
-  font-family: "Trap", "DM Sans", Arial, sans-serif;
-  font-size: 0.92rem;
+  font-family: "DM Sans", "Trap", Arial, sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.c2c-prereg-form__status {
+  margin: 0;
+  min-height: 1.2em;
+  font-family: "DM Sans", "Trap", Arial, sans-serif;
+  font-size: 0.86rem;
   line-height: 1.4;
+  color: rgba(255, 200, 200, 0.92);
+}
+
+.c2c-prereg-form__status[data-tone="success"] {
+  color: rgba(173, 219, 200, 0.95);
+}
+
+.c2c-prereg-form__status[data-tone="info"] {
   color: rgba(255, 255, 255, 0.7);
 }
 
@@ -1139,14 +1193,15 @@ h4 {
 }
 
 .c2c-prereg-field > span {
-  font-family: "Trap", "DM Sans", Arial, sans-serif;
-  font-size: 0.78rem;
-  letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.72);
+  font-family: "DM Sans", "Trap", Arial, sans-serif;
+  font-size: 0.84rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: rgba(255, 255, 255, 0.78);
 }
 
 .c2c-prereg-field > input {
-  font-family: "Trap", "DM Sans", Arial, sans-serif;
+  font-family: "DM Sans", "Trap", Arial, sans-serif;
   font-size: 1rem;
   padding: 0.72rem 0.9rem;
   border-radius: 12px;
@@ -1178,9 +1233,10 @@ h4 {
 
 .c2c-prereg-button {
   flex: 1;
-  font-family: "Trap-Bold", "Trap", Arial, sans-serif;
-  font-size: 0.92rem;
-  letter-spacing: 0.04em;
+  font-family: "DM Sans", "Trap", Arial, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0;
   padding: 0.78rem 1.1rem;
   border-radius: 999px;
   border: 1px solid transparent;
@@ -1189,6 +1245,7 @@ h4 {
     transform 220ms cubic-bezier(0.18, 1, 0.22, 1),
     box-shadow 220ms ease,
     background 220ms ease,
+    color 220ms ease,
     border-color 220ms ease,
     opacity 220ms ease;
 }
@@ -1216,9 +1273,15 @@ h4 {
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.32);
 }
 
-.c2c-prereg-button--primary:hover:not(:disabled) {
+.c2c-prereg-button--primary:hover:not(:disabled),
+.c2c-prereg-button--primary:focus-visible:not(:disabled) {
+  background: linear-gradient(180deg, #0c1814 0%, #061110 100%);
+  color: rgba(173, 219, 200, 0.98);
+  border-color: rgba(72, 186, 134, 0.85);
   transform: translateY(-1px);
-  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.4);
+  box-shadow:
+    0 18px 36px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 1px rgba(72, 186, 134, 0.55);
 }
 
 @media (max-width: 640px) {
@@ -1230,16 +1293,16 @@ h4 {
     flex-basis: clamp(24px, 7.5vw, 40px);
   }
   .c2c-prereg-strip--tl {
-    top: 4%;
-    left: 4%;
+    top: 20%;
+    left: 20%;
     transform: translate(-86%, -86%) rotate(-25deg) scaleX(0);
   }
   .c2c-prereg.is-active .c2c-prereg-strip--tl {
     transform: translate(-52%, -58%) rotate(-25deg) scaleX(1);
   }
   .c2c-prereg-strip--br {
-    right: 2%;
-    bottom: 8%;
+    right: 20%;
+    bottom: 20%;
     transform: translate(82%, 92%) rotate(-31deg) scaleX(0);
   }
   .c2c-prereg.is-active .c2c-prereg-strip--br {
@@ -1251,7 +1314,6 @@ h4 {
   }
   .c2c-prereg-form {
     width: min(360px, calc(100vw - 28px));
-    max-height: calc(100svh - 138px);
     gap: 0.8rem;
     padding: 1.15rem;
     border-radius: 16px;

@@ -64,27 +64,88 @@ function StripTiles({ stripIndex }: { stripIndex: number }) {
   );
 }
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+type Status =
+  | { tone: "idle"; message: "" }
+  | { tone: "info"; message: string }
+  | { tone: "error"; message: string }
+  | { tone: "success"; message: string };
+
 export default function PreRegistration({ active, onClose }: PreRegistrationProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [status, setStatus] = useState<Status>({ tone: "idle", message: "" });
 
   // When the panel closes externally, drop the in-flight submitting flag so a
   // re-open starts fresh.
   useEffect(() => {
     if (!active) {
       setSubmitting(false);
+      setStatus({ tone: "idle", message: "" });
     }
   }, [active]);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (submitting) return;
-    // No backend yet — just play the reverse animation by closing.
+
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    if (!trimmedName) {
+      setStatus({ tone: "error", message: "Please tell us your name." });
+      return;
+    }
+    if (!EMAIL_RE.test(trimmedEmail)) {
+      setStatus({ tone: "error", message: "That email doesn't look right." });
+      return;
+    }
+
     setSubmitting(true);
-    window.setTimeout(() => {
-      onClose();
-    }, 220);
+    setStatus({ tone: "info", message: "Saving you to the list…" });
+    try {
+      const res = await fetch("/api/preregister", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: trimmedName, email: trimmedEmail }),
+      });
+      const data: { success?: boolean; error?: string; alreadyRegistered?: boolean } =
+        await res.json().catch(() => ({}));
+
+      if (res.status === 409 || data?.alreadyRegistered) {
+        setStatus({
+          tone: "info",
+          message: "You're already on the list — we'll be in touch.",
+        });
+        setSubmitting(false);
+        return;
+      }
+
+      if (!res.ok || !data?.success) {
+        setStatus({
+          tone: "error",
+          message: data?.error || "Couldn't save that. Try again in a moment.",
+        });
+        setSubmitting(false);
+        return;
+      }
+
+      setStatus({
+        tone: "success",
+        message: "You're in. We'll ping you the moment C2C 7.0 opens.",
+      });
+      window.setTimeout(() => {
+        onClose();
+      }, 1200);
+    } catch (err) {
+      console.error(err);
+      setStatus({
+        tone: "error",
+        message: "Network hiccup. Please try again.",
+      });
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -117,6 +178,16 @@ export default function PreRegistration({ active, onClose }: PreRegistrationProp
             Drop your details — we&apos;ll ping you the moment registrations open.
           </p>
         </header>
+        {status.tone !== "idle" && (
+          <p
+            className="c2c-prereg-form__status"
+            data-tone={status.tone}
+            role={status.tone === "error" ? "alert" : "status"}
+            aria-live="polite"
+          >
+            {status.message}
+          </p>
+        )}
         <label className="c2c-prereg-field">
           <span>Name</span>
           <input
@@ -155,7 +226,7 @@ export default function PreRegistration({ active, onClose }: PreRegistrationProp
             className="c2c-prereg-button c2c-prereg-button--primary"
             disabled={!active || submitting}
           >
-            {submitting ? "Saved" : "Submit"}
+            {submitting ? "Saving…" : status.tone === "success" ? "Saved" : "Submit"}
           </button>
         </div>
       </form>
