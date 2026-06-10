@@ -1,46 +1,44 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import Image from "next/image";
+import { useId, useState } from "react";
 
 function toDomId(value: string) {
   return value.replace(/[^A-Za-z0-9_-]/g, "_");
 }
 
-type LiquidGlassMeasurements = {
-  width: number;
-  height: number;
-  radius: string;
+type ReturnAnnouncementProps = {
+  active: boolean;
+  onToggle: () => void;
 };
 
-const APPEAR_DELAY_MS = 2500;
-const CLOSE_FADE_MS = 320;
+const DETAILS = [
+  {
+    className: "c2c-upcoming-detail c2c-upcoming-detail--date",
+    eyebrow: "Date",
+    value: "September",
+  },
+  {
+    className: "c2c-upcoming-detail c2c-upcoming-detail--venue",
+    eyebrow: "Venue",
+    value: "Anna Audi",
+  },
+  {
+    className: "c2c-upcoming-detail c2c-upcoming-detail--place",
+    eyebrow: "VIT Vellore",
+    value: "Tamil Nadu",
+  },
+  {
+    className: "c2c-upcoming-detail c2c-upcoming-detail--cutout",
+    eyebrow: "Coming",
+    value: "September 2026",
+  },
+];
 
-function svgDataUrl(svg: string) {
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
-}
-
-function LiquidGlassFilter({
-  id,
-  measurements,
-}: {
-  id: string;
-  measurements: LiquidGlassMeasurements;
-}) {
-  const width = Math.max(1, Math.round(measurements.width));
-  const height = Math.max(1, Math.round(measurements.height));
-  const radius = measurements.radius || "28px";
-
-  const box = svgDataUrl(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}px" height="${height}px"><rect width="${width}px" height="${height}px" rx="${radius}" ry="${radius}" fill="black" /></svg>`
-  );
-
-  const borderTexture = svgDataUrl(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}px" height="${height}px"><rect x="0" y="0" width="50%" height="50%" fill="black" /><rect x="50%" y="50%" width="50%" height="50%" fill="yellow" /><rect x="0" y="50%" width="50%" height="50%" fill="green" /><rect x="50%" y="0" width="50%" height="50%" fill="red" /></svg>`
-  );
-
+function GlassDistortion({ id }: { id: string }) {
   return (
     <svg
-      className="c2c-lg-filter"
+      className="c2c-upcoming-filter"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
       focusable="false"
@@ -49,146 +47,89 @@ function LiquidGlassFilter({
     >
       <defs>
         <filter id={id}>
-          <feImage href={box} x="0" y="0" width={width} height={height} result="box" />
-          <feImage
-            href={borderTexture}
-            x={width * -0.5}
-            y={height * -0.5}
-            width={width * 2}
-            height={height * 2}
-            result="border-tex"
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.008 0.012"
+            numOctaves="2"
+            seed="18"
+            result="noise"
           />
-          <feGaussianBlur stdDeviation="50" />
-          <feComponentTransfer result="dispMap">
-            <feFuncA type="discrete" tableValues="0 1 1 1 1 1 1 1 1" />
-          </feComponentTransfer>
+          <feGaussianBlur in="noise" stdDeviation="1.8" result="softNoise" />
           <feDisplacementMap
             in="SourceGraphic"
-            in2="dispMap"
-            scale="40"
+            in2="softNoise"
+            scale="34"
             xChannelSelector="R"
             yChannelSelector="G"
           />
-          <feGaussianBlur stdDeviation="5" />
         </filter>
       </defs>
     </svg>
   );
 }
 
-export default function ReturnAnnouncement() {
-  const [mounted, setMounted] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [measurements, setMeasurements] = useState<LiquidGlassMeasurements>({
-    width: 1,
-    height: 1,
-    radius: "28px",
-  });
-  const cardRef = useRef<HTMLDivElement>(null);
-  const rawId = useId();
-  const filterId = `c2c-lg-filter-${toDomId(rawId)}`;
-
-  useEffect(() => {
-    const t = window.setTimeout(() => {
-      setMounted(true);
-      window.requestAnimationFrame(() => setOpen(true));
-    }, APPEAR_DELAY_MS);
-    return () => window.clearTimeout(t);
-  }, []);
-
-  useEffect(() => {
-    if (!open) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = prev;
-    };
-  }, [open]);
-
-  useEffect(() => {
-    if (!mounted || open) return;
-    const t = window.setTimeout(() => setMounted(false), CLOSE_FADE_MS);
-    return () => window.clearTimeout(t);
-  }, [mounted, open]);
-
-  useEffect(() => {
-    if (!mounted || !cardRef.current) return;
-
-    const card = cardRef.current;
-    const updateMeasurements = () => {
-      const { width, height } = card.getBoundingClientRect();
-      const radius = getComputedStyle(card).borderRadius;
-
-      setMeasurements((current) => {
-        const nextWidth = Math.round(width);
-        const nextHeight = Math.round(height);
-
-        if (
-          current.width === nextWidth &&
-          current.height === nextHeight &&
-          current.radius === radius
-        ) {
-          return current;
-        }
-
-        return {
-          width: nextWidth,
-          height: nextHeight,
-          radius,
-        };
-      });
-    };
-
-    updateMeasurements();
-
-    const resizeObserver = new ResizeObserver(updateMeasurements);
-    resizeObserver.observe(card);
-
-    return () => resizeObserver.disconnect();
-  }, [mounted]);
-
-  if (!mounted) return null;
-
-  const backdropFilter = `url(#${filterId})`;
+export default function ReturnAnnouncement({ active, onToggle }: ReturnAnnouncementProps) {
+  const [hovered, setHovered] = useState(false);
+  const filterId = `c2c-upcoming-glass-${toDomId(useId())}`;
+  const showingGlass = hovered || active;
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-label="C2C announcement"
-      className={`c2c-lg-overlay ${open ? "is-open" : ""}`}
-      onClick={() => setOpen(false)}
-    >
-      <LiquidGlassFilter id={filterId} measurements={measurements} />
+    <div className={`c2c-upcoming ${active ? "is-active" : ""}`}>
+      <GlassDistortion id={filterId} />
 
       <div
-        ref={cardRef}
-        className="c2c-lg c2c-lg-card"
+        className={`c2c-upcoming-overlay ${showingGlass ? "is-visible" : ""} ${
+          active ? "is-active" : ""
+        }`}
+        aria-hidden={!active}
         style={{
-          WebkitBackdropFilter: backdropFilter,
-          backdropFilter,
+          WebkitBackdropFilter: `url(#${filterId}) blur(12px) saturate(150%)`,
+          backdropFilter: `url(#${filterId}) blur(12px) saturate(150%)`,
         }}
-        onClick={(e) => e.stopPropagation()}
       >
-        <div aria-hidden="true" className="c2c-lg__tint" />
-        <div aria-hidden="true" className="c2c-lg__shine" />
-        <div className="c2c-lg__content">
-          <button
-            type="button"
-            onClick={() => setOpen(false)}
-            aria-label="Close"
-            className="c2c-lg-close"
-          >
-            &times;
-          </button>
-          <h2 className="c2c-lg-title">
-            C2C will
-            <br />
-            be back
-          </h2>
-          <p className="c2c-lg-copy">September 2026</p>
+        <div className="c2c-upcoming-overlay__tint" />
+        <div className="c2c-upcoming-overlay__shine" />
+
+        <div className="c2c-upcoming-stage" aria-hidden={!active}>
+          <div className="c2c-upcoming-logo-wrap">
+            <Image
+              src="/landing/C2C Logo.svg"
+              alt=""
+              width={265}
+              height={299}
+              priority
+              className="c2c-upcoming-logo"
+            />
+            <div className="c2c-upcoming-detail-layer">
+              {DETAILS.map((item) => (
+                <div key={item.className} className={item.className}>
+                  <span>{item.eyebrow}</span>
+                  <strong>{item.value}</strong>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
+
+      <button
+        type="button"
+        className={`c2c-upcoming-button ${active ? "is-active" : ""}`}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        onFocus={() => setHovered(true)}
+        onBlur={() => setHovered(false)}
+        onClick={onToggle}
+        aria-pressed={active}
+        aria-label={active ? "Close upcoming announcement" : "See upcoming announcement"}
+      >
+        <span className="c2c-upcoming-button__effect" />
+        <span className="c2c-upcoming-button__tint" />
+        <span className="c2c-upcoming-button__shine" />
+        <span className="c2c-upcoming-button__content">
+          {active ? "Back to site" : "See upcoming"}
+        </span>
+      </button>
     </div>
   );
 }

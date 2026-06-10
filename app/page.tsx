@@ -119,6 +119,7 @@ function FeedbackSearchParamGate({ onOpen, disabled }: { onOpen: (email: string)
 }
 
 export default function Page() {
+  const [upcomingOpen, setUpcomingOpen] = useState(false);
   const [feedbackModal, setFeedbackModal] = useState({
     isOpen: false,
     email: '',
@@ -165,13 +166,22 @@ export default function Page() {
     });
   };
 
-  return (
-    <div className="relative w-full">
-      <div className="fixed inset-0 -z-10 bg-gradient-to-b from-[#0a0a0a] via-[#161616] to-[#0a0a0a]" />
-      <ReturnAnnouncement />
+  const toggleUpcoming = () => {
+    if (!upcomingOpen && typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    setUpcomingOpen((current) => !current);
+  };
 
-      <ViewportPortal>
+  return (
+    <div className={`relative w-full c2c-page-shell ${upcomingOpen ? "is-upcoming-open" : ""}`}>
+      <div className="fixed inset-0 -z-10 bg-gradient-to-b from-[#0a0a0a] via-[#161616] to-[#0a0a0a]" />
+
+      <ViewportPortal className={`c2c-upcoming-header ${upcomingOpen ? "is-upcoming-open" : ""}`}>
         <TopBar />
+      </ViewportPortal>
+      <ViewportPortal id="c2c-upcoming-portal">
+        <ReturnAnnouncement active={upcomingOpen} onToggle={toggleUpcoming} />
       </ViewportPortal>
 
       {/* Watch search params for feedback id inside Suspense boundary */}
