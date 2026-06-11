@@ -64,7 +64,7 @@ export default function TopBar({ onUpcomingEdition }: TopBarProps = {}) {
 
   return (
     <>
-      <div className="c2c-topbar w-full border-b border-white/60">
+      <div className="c2c-topbar w-full border-b border-white/30">
         <span aria-hidden className="c2c-topbar__effect" />
         <span aria-hidden className="c2c-topbar__tint" />
         <span aria-hidden className="c2c-topbar__shine" />

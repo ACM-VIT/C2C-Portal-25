@@ -355,14 +355,16 @@ h4 {
 .c2c-upcoming-header {
   position: fixed;
   inset: 0 0 auto;
-  transform: translateY(0);
   opacity: 1;
   width: 100%;
   pointer-events: none;
   transition:
     transform 760ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 520ms ease;
-  will-change: transform, opacity;
+  /* No transform / will-change in the resting state: either one would make
+   * this header a "backdrop root", which truncates the navbar's
+   * backdrop-filter so the blur samples nothing and the glass looks flat.
+   * They're applied only while sliding away (.is-upcoming-open) below. */
 }
 
 /* Liquid-glass treatment (chakornk-style).
@@ -385,58 +387,38 @@ h4 {
   isolation: isolate;
   overflow: hidden;
   pointer-events: auto;
-  background: transparent;
-  /* Subtle outer drop so the bar reads as a floating slab on top of the
-   * hero. Inset hairlines come from __shine. */
+  background: rgba(255, 255, 255, 0.15);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  /* Outer drop + rim highlights from the glass-card recipe. The recipe's
+   * `inset 0 0 20px 10px` glow is scaled down here: on a 56px-tall bar that
+   * spread would flood the whole height with white and hide the blur. */
   box-shadow:
-    0 10px 28px rgba(0, 0, 0, 0.28),
-    0 2px 6px rgba(0, 0, 0, 0.18);
+    0 8px 32px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 0 24px 0 rgba(255, 255, 255, 0.18);
+}
+
+/* Bright sheen skimming the top edge (glass-card ::before). */
+.c2c-topbar::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.8),
+    transparent
+  );
+  pointer-events: none;
 }
 
 .c2c-topbar__effect,
 .c2c-topbar__tint,
 .c2c-topbar__shine {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-/* Blur lifted verbatim from anitaparmar26's codepen (BaLBxeG) — a plain
- * 30px backdrop-filter, no saturate, no SVG displacement. */
-.c2c-topbar__effect {
-  z-index: 0;
-  -webkit-backdrop-filter: blur(30px);
-  backdrop-filter: blur(30px);
-}
-
-/* Tint is what makes the slab visible against a uniform dark background.
- * Stack: a clear top-down glass wash, a soft warm-green sheen from the
- * left, and a faint white highlight at the upper edge. */
-.c2c-topbar__tint {
-  z-index: 1;
-  background:
-    radial-gradient(140% 120% at 12% -40%, rgba(255, 255, 255, 0.32), transparent 56%),
-    radial-gradient(160% 130% at 92% -50%, rgba(173, 219, 200, 0.22), transparent 60%),
-    linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.16) 0%,
-      rgba(255, 255, 255, 0.08) 45%,
-      rgba(255, 255, 255, 0.05) 60%,
-      rgba(0, 0, 0, 0.22) 100%
-    ),
-    rgba(255, 255, 255, 0.1);
-}
-
-/* Edge rim + corner sparkles. Captures the bright top edge, soft bottom
- * shadow, and an inner stroke that looks like a polished bezel. */
-.c2c-topbar__shine {
-  z-index: 2;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.55),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.18),
-    inset 2px 2px 1px rgba(255, 255, 255, 0.35),
-    inset -2px -2px 1px rgba(255, 255, 255, 0.14),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  display: none;
 }
 
 .c2c-topbar > div {
@@ -448,6 +430,7 @@ h4 {
 .c2c-upcoming-header.is-upcoming-open {
   transform: translateY(calc(-100% - 10px));
   opacity: 0;
+  will-change: transform, opacity;
 }
 
 /*
@@ -690,7 +673,7 @@ h4 {
     0 1px 2px rgba(0, 0, 0, 0.96),
     0 4px 16px rgba(0, 0, 0, 0.88),
     0 0 18px rgba(255, 255, 255, 0.16);
-  padding: 0.18rem 0.55rem;
+  padding: 0.4rem 1.05rem;
   border-radius: 999px;
   background: rgba(0, 0, 0, 0.4);
   box-shadow:
@@ -803,7 +786,7 @@ h4 {
 
   .c2c-upcoming-label span {
     font-size: clamp(0.62rem, 2.25vmin, 0.78rem);
-    padding: 0.12rem 0.45rem;
+    padding: 0.28rem 0.78rem;
     letter-spacing: 0.05em;
   }
 
