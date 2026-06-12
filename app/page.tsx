@@ -99,18 +99,19 @@ export default function Page() {
 
   const handleSuccessDone = useCallback(() => setSuccessPlaying(false), []);
 
-  // Lock body scroll while the pre-register flow is open
+  // Lock body scroll while the pre-register flow or success animation is active
   useEffect(() => {
     if (typeof document === "undefined") return;
+    const shouldLockScroll = preRegisterOpen || successPlaying;
     const previousBody = document.body.style.overflow;
     const previousHtml = document.documentElement.style.overflow;
-    document.body.style.overflow = preRegisterOpen ? "hidden" : previousBody || "";
-    document.documentElement.style.overflow = preRegisterOpen ? "hidden" : previousHtml || "";
+    document.body.style.overflow = shouldLockScroll ? "hidden" : previousBody || "";
+    document.documentElement.style.overflow = shouldLockScroll ? "hidden" : previousHtml || "";
     return () => {
       document.body.style.overflow = previousBody || "";
       document.documentElement.style.overflow = previousHtml || "";
     };
-  }, [preRegisterOpen]);
+  }, [preRegisterOpen, successPlaying]);
 
   // Surface the upcoming toggle to the (portal-rendered) TopBar nav item
   useEffect(() => {
