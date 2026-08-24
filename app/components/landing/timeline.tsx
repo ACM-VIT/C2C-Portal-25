@@ -11,7 +11,7 @@ const days: DaySchedule[] = [
   {
     id: "D1",
     label: "Day 1",
-    date: "4th September 2026",
+    date: "7th September 2026",
     entries: [
       { time: "01:30 PM", text: "Repo init - Reporting Time" },
       {
@@ -24,7 +24,7 @@ const days: DaySchedule[] = [
   {
     id: "D2",
     label: "Day 2",
-    date: "5th September 2026",
+    date: "8th September 2026",
     entries: [
       { time: "12:00 AM", text: "Run Workflow (Review 1 - no eliminations)" },
       { time: "09:00 AM", text: "Sync with origin (Reporting back at the venue)" },
@@ -34,7 +34,7 @@ const days: DaySchedule[] = [
   {
     id: "D3",
     label: "Day 3",
-    date: "6th September 2026",
+    date: "9th September 2026",
     entries: [
       { time: "12:00 AM", text: "Push to dev (Review 3 - eliminations)" },
       { time: "10:00 AM", text: "Push to main (Final Pitches)" },

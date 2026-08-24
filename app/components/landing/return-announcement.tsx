@@ -31,7 +31,7 @@ const SECTORS: Sector[] = [
 	{ key: "venue", centerDeg: 0, color: "rgba(72, 186, 134, 0.84)", delay: "460ms", eyebrow: "Venue", value: "Anna Audi" },
 	{ key: "campus", centerDeg: 60, color: "rgba(211, 235, 224, 0.84)", delay: "510ms", eyebrow: "Latest Edition", value: "C2C 7.0" },
 	{ key: "state", centerDeg: 120, color: "rgba(134, 204, 172, 0.84)", delay: "560ms", eyebrow: "State", value: "Tamil Nadu, India" },
-	{ key: "cutout", centerDeg: 180, color: "rgba(44, 44, 44, 0.84)", delay: "610ms", eyebrow: "Dates", value: "September 4th-6th 2026" },
+	{ key: "cutout", centerDeg: 180, color: "rgba(44, 44, 44, 0.84)", delay: "610ms", eyebrow: "Dates", value: "September 7th - 9th" },
 	{ key: "date", centerDeg: 240, color: "rgba(94, 191, 148, 0.84)", delay: "660ms", eyebrow: "Campus", value: "VIT Vellore" },
 	{ key: "return", centerDeg: 300, color: "rgba(173, 219, 200, 0.84)", delay: "710ms", eyebrow: "Flagship Event", value: "ACM-VIT" },
 ];
